@@ -242,12 +242,12 @@ function TierCard({
   if (compact) {
     return (
       <li
-        className="flex min-h-11 items-center justify-between gap-3 border-b border-rule/70 py-2.5 last:border-b-0"
+        className="flex min-h-14 items-center justify-between gap-3 border-b border-rule/70 py-3.5 last:border-b-0"
       >
         <div className="min-w-0">
-          <h3 className="truncate text-[0.88rem] font-medium text-ink">{tier.label}</h3>
+          <h3 className="truncate text-[1rem] font-medium text-ink">{tier.label}</h3>
           {people !== null ? (
-            <p className="mt-0.5 text-[0.7rem] text-muted">
+            <p className="mt-0.5 text-[0.82rem] text-muted">
               {people} {people === 1 ? "person" : "persons"}
             </p>
           ) : null}
@@ -255,13 +255,13 @@ function TierCard({
         <div className="shrink-0 text-right">
           <span
             className={`inline-flex rounded-md px-2 py-0.5 font-semibold ${
-              tier.price === null ? "text-[0.72rem]" : "text-[0.86rem]"
+              tier.price === null ? "text-[0.82rem]" : "text-[1rem]"
             } ${accent.noteBg} ${accent.price}`}
           >
             {formatPrice(tier.price)}
           </span>
           {perPersonLabel ? (
-            <p className="mt-0.5 text-[0.62rem] text-muted">{perPersonLabel}</p>
+            <p className="mt-0.5 text-[0.72rem] text-muted">{perPersonLabel}</p>
           ) : null}
         </div>
       </li>

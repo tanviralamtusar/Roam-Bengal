@@ -156,9 +156,9 @@ function TourDetail() {
           ))}
         </div>
 
-        <div className="wrap grid gap-10 pb-20 lg:-translate-x-[clamp(0px,calc((100vw-1240px)/2+24px),74px)] lg:grid-cols-[1fr_340px]">
+        <div className="wrap grid gap-10 pb-20 lg:-translate-x-[clamp(0px,calc((100vw-1240px)/2+24px),74px)] lg:grid-cols-[1fr_300px] lg:gap-6 xl:grid-cols-[1fr_240px]">
           <main id="main" className="min-w-0">
-            <nav className="text-[0.78rem] text-muted" aria-label="Breadcrumb">
+            <nav className="text-[0.85rem] text-muted" aria-label="Breadcrumb">
               <Link to="/" className="hover:text-green">
                 Home
               </Link>
@@ -170,45 +170,45 @@ function TourDetail() {
               <span className="text-ink">{tour.title}</span>
             </nav>
 
-            <div className="mt-3 flex flex-wrap items-start justify-between gap-4">
-              <h1 className="font-display text-[clamp(1.8rem,4vw,2.7rem)] leading-tight text-green">
+            <div className="mt-4 flex flex-wrap items-start justify-between gap-4">
+              <h1 className="font-display text-[clamp(2rem,4.2vw,2.9rem)] leading-tight text-green">
                 {tour.title}
               </h1>
-              <div className="flex h-16 w-16 shrink-0 flex-col items-center justify-center rounded-full bg-gold text-ink">
-                <span className="font-display text-xl leading-none font-bold">
+              <div className="flex h-20 w-20 shrink-0 flex-col items-center justify-center rounded-full bg-gold text-ink">
+                <span className="font-display text-[1.9rem] leading-none font-bold">
                   {tour.durationDays}
                 </span>
-                <span className="text-[0.62rem] font-semibold">Days</span>
+                <span className="mt-0.5 text-[0.85rem] font-semibold">Days</span>
               </div>
             </div>
 
-            <div className="mt-5 h-px bg-rule" />
+            <div className="mt-6 h-px bg-rule" />
 
             {facts.length ? (
-              <div className="mt-5 grid grid-cols-2 gap-x-5 gap-y-4 sm:grid-cols-3">
+              <div className="mt-7 grid grid-cols-2 gap-x-6 gap-y-7 sm:grid-cols-3">
                 {facts.map(([key, value]) => (
-                  <div key={key} className="flex items-start gap-2.5">
-                    <span aria-hidden="true" className="text-[1.5rem] leading-none">
+                  <div key={key} className="flex items-center gap-3.5">
+                    <span aria-hidden="true" className="w-10 shrink-0 text-center text-[2.1rem] leading-none">
                       {TOUR_FACT_META[key].icon}
                     </span>
                     <div>
-                      <div className="text-[0.72rem] tracking-wide text-muted uppercase">
+                      <div className="text-[1rem] leading-6 text-muted">
                         {TOUR_FACT_META[key].label}
                       </div>
-                      <div className="text-[0.98rem] font-semibold text-ink">{value}</div>
+                      <div className="text-[1.05rem] leading-6 font-semibold text-ink">{value}</div>
                     </div>
                   </div>
                 ))}
               </div>
             ) : null}
 
-            <div className="sticky top-0 z-20 -mx-1 mt-8 overflow-x-auto border-y border-rule bg-sand/95 backdrop-blur">
-              <div className="flex gap-1 px-1 py-2">
+            <div className="sticky top-0 z-20 -mx-1 mt-9 overflow-x-auto border-y border-rule bg-sand/95 backdrop-blur">
+              <div className="flex gap-1.5 px-1 py-2.5">
                 {TABS.filter(([id]) => hasSection(tour, id)).map(([id, label]) => (
                   <a
                     key={id}
                     href={`#${id}`}
-                    className="rounded-full px-4 py-2 text-[0.8rem] font-medium whitespace-nowrap text-muted hover:bg-mint hover:text-green"
+                    className="rounded-full px-4 py-2 text-[1rem] font-medium whitespace-nowrap text-muted hover:bg-mint hover:text-green"
                   >
                     {id === "itinerary" && tour.category === "day-tour"
                       ? "Full-Day Itinerary"
@@ -510,10 +510,10 @@ function TourDetail() {
               line up with its right edge, keeping a 16px gap to the viewport on narrower screens. */}
           <aside className="lg:sticky lg:top-6 lg:mr-[calc(-1*clamp(0px,calc((100vw-1240px)/2+24px),148px))] lg:h-fit">
             <div className="rounded-2xl border border-rule bg-cream p-6 shadow-sm">
-              <div className="text-[0.72rem] tracking-wide text-muted uppercase">
+              <div className="font-display text-[1.75rem] leading-tight font-bold text-green">
                 Tour Cost
               </div>
-              <div className="mt-1 font-display text-[2rem] leading-none font-bold text-green">
+              <div className="mt-2 font-display text-[2.1rem] leading-none font-bold text-green">
                 {(() => {
                   const price = formatPrice(tour.discountPriceUsd ?? tour.priceUsd);
                   return price.startsWith("$") ? (
@@ -529,7 +529,7 @@ function TourDetail() {
                     price
                   );
                 })()}
-                <span className="ml-1 text-[0.78rem] font-normal text-muted">
+                <span className="ml-1 text-[0.9rem] font-normal text-muted">
                   / Adult* From
                 </span>
               </div>
@@ -554,7 +554,7 @@ function TourDetail() {
 
 
               {sidebarPromises.length ? (
-                <ul className="mt-5 flex flex-col gap-2.5 text-[0.82rem] leading-5">
+                <ul className="mt-6 flex flex-col gap-3.5 text-[1rem] leading-6">
                   {sidebarPromises.map((p) => (
                     <li key={p} className="flex gap-2">
                       <span className="text-green-bright">✓</span>
@@ -652,7 +652,7 @@ function Section({
   children: React.ReactNode;
 }) {
   const heading = (
-    <h2 className={`mb-4 ${headingClassName ?? "font-display text-[1.35rem]"} text-green`}>
+    <h2 className={`mb-4 ${headingClassName ?? "font-display text-[1.75rem]"} text-green`}>
       {title}
     </h2>
   );
