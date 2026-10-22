@@ -10,6 +10,7 @@ import {
   FiHeart,
 } from "react-icons/fi";
 import { FaStar, FaHeart } from "react-icons/fa";
+import { DollarSign } from "lucide-react";
 import { PhotoFrame, FRAME_GRADIENTS, gradientFor } from "@/components/ui/photo-frame";
 import { FormatTourCardDescription } from "@/components/ui/format-text";
 import type { TourDTO } from "@/lib/content-types";
@@ -126,13 +127,15 @@ export function TourCard({
             <div className="text-[0.76rem] leading-[1.3] text-muted">
               From
               <span className="block font-display text-[1.35rem] font-bold text-green">
-                {formatPrice(discountPrice ?? price)}
+                <PriceWithIcon usd={discountPrice ?? price} iconClassName="size-[1.05rem]" />
               </span>
               per person
             </div>
             {hasDiscount ? (
               <div className="flex flex-col items-start gap-1 border-l border-rule pl-3">
-                <span className="text-[0.8rem] text-muted line-through">{formatPrice(price)}</span>
+                <span className="text-[0.8rem] text-muted line-through">
+                  <PriceWithIcon usd={price} iconClassName="size-[0.75rem]" />
+                </span>
                 <span className="rounded-full border border-orange px-2 py-0.5 text-[0.68rem] font-semibold whitespace-nowrap text-orange">
                   {discountPct}% Off
                 </span>
@@ -159,6 +162,23 @@ function StatItem({ icon, value, label }: { icon: ReactNode; value: string; labe
       <span className="text-[0.8rem] font-bold whitespace-nowrap text-ink">{value}</span>
       <span className="text-[0.64rem] text-muted">{label}</span>
     </div>
+  );
+}
+
+/** Renders formatPrice output with the Lucide dollar icon in place of the "$" glyph. */
+function PriceWithIcon({ usd, iconClassName }: { usd: number | null; iconClassName: string }) {
+  const text = formatPrice(usd);
+  if (!text.startsWith("$")) return <>{text}</>;
+  return (
+    <>
+      <DollarSign
+        aria-hidden="true"
+        className={`mr-px inline-block align-[-0.08em] ${iconClassName}`}
+        strokeWidth={2.5}
+      />
+      <span className="sr-only">$</span>
+      {text.slice(1)}
+    </>
   );
 }
 

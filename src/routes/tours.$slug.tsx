@@ -570,7 +570,7 @@ function TourDetail() {
                 className="mt-6 w-full cta-pulse-glow hover:scale-[1.05]"
                 search={{ tour: tour.slug }}
               >
-                View Details
+                Book now
                 <ArrowRight className="h-4 w-4" />
               </ButtonLink>
             </div>
