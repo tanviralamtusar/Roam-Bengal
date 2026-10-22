@@ -421,6 +421,9 @@ export const siteDefaults = {
     ],
     intro_bold:
       "No strangers. No shopping detours. Just Bangladesh — appropriately experienced.",
+    // Empty means the closing section keeps its drawn Dhaka skyline.
+    cta_image: "",
+    cta_image_alt: "A Roam Bengal trip in Bangladesh",
   },
 
   /**

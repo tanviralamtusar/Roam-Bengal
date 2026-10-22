@@ -83,6 +83,7 @@ function ToursIndex() {
   const navigate = useNavigate({ from: "/tours/" });
   const { tours_page, homepage } = useSiteSettings();
   const bannerPhoto = imageMeta(tours_page, "banner_image");
+  const ctaPhoto = imageMeta(tours_page, "cta_image");
 
   const active = theme ?? "all";
   const themeFiltered =
@@ -258,7 +259,18 @@ function ToursIndex() {
                 {homepage.cta_label}
               </ButtonLink>
             </div>
-            <DhakaScene className="h-auto w-full" />
+            {tours_page.cta_image ? (
+              <img
+                src={tours_page.cta_image}
+                alt={ctaPhoto.alt}
+                title={ctaPhoto.title || undefined}
+                loading="lazy"
+                decoding="async"
+                className="aspect-[46/38] w-full object-contain"
+              />
+            ) : (
+              <DhakaScene className="h-auto w-full" />
+            )}
           </div>
         </section>
       </main>

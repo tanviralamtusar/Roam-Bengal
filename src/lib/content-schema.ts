@@ -623,6 +623,19 @@ export const SETTINGS_SCHEMA: Record<string, SettingsSchema> = {
           { kind: "text", key: "intro_bold", label: "Bold closing line" },
         ],
       },
+      {
+        title: "Closing section",
+        description:
+          "The \"Let's chat\" band at the bottom of the page. Its wording is shared with the homepage.",
+        fields: [
+          {
+            kind: "image",
+            key: "cta_image",
+            label: "Photo beside the text",
+            hint: "Leave empty to keep the drawn Dhaka skyline.",
+          },
+        ],
+      },
     ],
   },
 
