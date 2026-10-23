@@ -56,7 +56,7 @@ export function FaithSection(_props: HomeSectionProps) {
               const Icon = ICONS[i % ICONS.length]!;
               const { bg, fg } = ICON_COLORS[i % ICON_COLORS.length]!;
               return (
-              <li key={item.text} className="flex items-center gap-3 text-[0.95rem] leading-[1.5] text-ink">
+              <li key={item.text} className="flex items-center gap-3 text-[16px] leading-[1.5] text-ink">
                 <span
                   className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full"
                   style={{ background: bg, color: fg }}
@@ -72,7 +72,7 @@ export function FaithSection(_props: HomeSectionProps) {
 
         <div className="flex flex-col justify-center gap-5 nav:col-start-1 nav:row-start-2">
           {homepage.faith_callouts.map((c) => (
-            <p key={c.lead} className="text-[0.92rem] leading-[1.6] text-muted">
+            <p key={c.lead} className="text-[16px] leading-[1.6] text-muted">
               <strong className="text-ink">
                 <FormatText>{c.lead}</FormatText>
               </strong>{" "}
