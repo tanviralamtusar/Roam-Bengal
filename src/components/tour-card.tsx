@@ -87,7 +87,7 @@ export function TourCard({
           ) : null}
         </div>
 
-        <h4 className="mb-1.5 font-display text-[1.25rem] font-bold text-green">{tour.title}</h4>
+        <h4 className="mb-1.5 font-montserrat text-[1.25rem] font-bold text-green">{tour.title}</h4>
 
         {description ? (
           <div className="mb-4">
