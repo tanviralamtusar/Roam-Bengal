@@ -554,7 +554,7 @@ function TourDetail() {
 
 
               {sidebarPromises.length ? (
-                <ul className="mt-6 flex flex-col gap-3.5 text-[1rem] leading-6">
+                <ul className="mt-6 flex flex-col gap-3.5 text-left text-[1rem] leading-6">
                   {sidebarPromises.map((p) => (
                     <li key={p} className="flex gap-2">
                       <span className="text-green-bright">✓</span>

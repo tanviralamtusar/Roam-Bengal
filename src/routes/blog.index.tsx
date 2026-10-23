@@ -5,6 +5,7 @@ import { SiteFooter } from "@/components/site-footer";
 import { WhatsAppFloat } from "@/components/whatsapp-float";
 import { PhotoFrame } from "@/components/ui/photo-frame";
 import { imageMeta } from "@/lib/image-meta";
+import { FormatText } from "@/components/ui/format-text";
 import { useSiteSettings } from "@/hooks/use-site-settings";
 import { toPlainText } from "@/lib/markdown";
 import { listPublishedPosts } from "@/lib/site-content.functions";
@@ -62,9 +63,34 @@ function BlogIndex() {
         </section>
 
         <div className="mx-auto w-full max-w-[1340px] px-5 pt-[81px] pb-[90px] font-opensans text-[#2B2B2B]">
+          {/* Introduction */}
+          <section>
+            <h2 className="mb-[19px] font-architect text-[clamp(1.6rem,3vw,2.375rem)] leading-none font-normal uppercase">
+              <span className="font-bold text-[#115436]">{blog_page.intro_heading_1}</span>
+              <br />
+              <span className="text-[#FDBC13] [-webkit-text-stroke:0.8px_currentColor]">
+                {blog_page.intro_heading_2}
+              </span>
+            </h2>
+            {blog_page.intro_paragraphs.map((p) => (
+              <p key={p} className="mb-[15px] text-[18px] leading-[27px] [&_strong]:font-bold [&_strong]:text-[#2B2B2B]">
+                <FormatText>{p}</FormatText>
+              </p>
+            ))}
+            {blog_page.submit_email ? (
+              <p className="mb-[15px] text-left text-[18px] leading-[27px] [&_strong]:font-bold [&_strong]:text-[#2B2B2B]">
+                <FormatText>{blog_page.submit_label}</FormatText>{" "}
+                <span aria-hidden="true">📨</span>{" "}
+                <a href={`mailto:${blog_page.submit_email}`} className="text-[#0000FF] hover:underline">
+                  {blog_page.submit_email}
+                </a>
+              </p>
+            ) : null}
+          </section>
+
           {/* Story grid */}
           {posts.length ? (
-            <div className="grid gap-[31px] min-[640px]:grid-cols-2 min-[980px]:grid-cols-3">
+            <div className="mt-[42px] grid gap-[31px] min-[640px]:grid-cols-2 min-[980px]:grid-cols-3">
               {posts.map((post, i) => (
                 <article
                   key={post.id}
@@ -109,7 +135,7 @@ function BlogIndex() {
               ))}
             </div>
           ) : (
-            <p className="rounded-2xl border border-dashed border-rule py-16 text-center text-muted">
+            <p className="mt-[46px] rounded-2xl border border-dashed border-rule py-16 text-center text-muted">
               No stories published yet.
             </p>
           )}
