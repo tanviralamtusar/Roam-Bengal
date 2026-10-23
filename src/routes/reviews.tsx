@@ -165,7 +165,9 @@ function Reviews() {
             {visible.map((t, i) => (
               <article
                 key={t.id}
-                className="flex flex-col flex-wrap items-start justify-between gap-5 border-b border-rule py-[34px] first:pt-1.5 min-[640px]:flex-row"
+                // Target of the homepage review cards' "See more" link.
+                id={`review-${t.id}`}
+                className="flex scroll-mt-28 flex-col flex-wrap items-start justify-between gap-5 border-b border-rule py-[34px] first:pt-1.5 min-[640px]:flex-row"
               >
                 <div className="flex items-center gap-3.5">
                   <PhotoFrame

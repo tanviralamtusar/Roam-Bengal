@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ChevronLeft, ChevronRight, Quote, Send } from "lucide-react";
 import { FaStar } from "react-icons/fa";
 import { SiFacebook, SiGoogle, SiTripadvisor, SiTrustpilot } from "react-icons/si";
@@ -224,9 +224,13 @@ function ReviewCard({ review, tint }: { review: TestimonialDTO; tint: number }) 
       style={{ background: palette.bg }}
     >
       <Quote className="h-7 w-7 fill-gold text-gold" strokeWidth={0} aria-hidden="true" />
-      <blockquote className="mt-4 flex-1 text-center text-[0.98rem] leading-[1.6] text-ink/85">
-        ‘{review.headline ?? review.quote}’
-      </blockquote>
+      <div className="mt-4 flex flex-1 flex-col items-center">
+        <blockquote className="text-center text-[0.98rem] leading-[1.6] text-ink/85">
+          ‘{review.headline ?? review.quote}’
+        </blockquote>
+        {/* Without a headline the quote is already the headline — never show it twice. */}
+        {review.headline && review.quote.trim() ? <ReviewDescription id={review.id} text={review.quote} /> : null}
+      </div>
       <ScoreStars score={review.rating ?? 5} colour="#F2B705" className="mt-4 text-[0.9rem]" />
       <figcaption className="mt-5 flex flex-col items-center gap-2.5">
         {review.avatarUrl ? (
@@ -254,6 +258,41 @@ function ReviewCard({ review, tint }: { review: TestimonialDTO; tint: number }) 
         </span>
       </figcaption>
     </figure>
+  );
+}
+
+/**
+ * The full review under its headline, clamped to three lines. "See more" only appears
+ * when the text actually overflows the clamp, and opens the review in full on /reviews.
+ */
+function ReviewDescription({ id, text }: { id: string; text: string }) {
+  const ref = useRef<HTMLParagraphElement>(null);
+  const [overflows, setOverflows] = useState(false);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const measure = () => setOverflows(el.scrollHeight > el.clientHeight + 1);
+    measure();
+    window.addEventListener("resize", measure);
+    return () => window.removeEventListener("resize", measure);
+  }, [text]);
+
+  return (
+    <div className="mt-3 flex flex-col items-center">
+      <p ref={ref} className="line-clamp-3 text-center text-[0.88rem] leading-[1.6] text-muted">
+        {text}
+      </p>
+      {overflows ? (
+        <Link
+          to="/reviews"
+          hash={`review-${id}`}
+          className="mt-1.5 text-[0.82rem] font-semibold text-accent hover:underline"
+        >
+          See more
+        </Link>
+      ) : null}
+    </div>
   );
 }
 
