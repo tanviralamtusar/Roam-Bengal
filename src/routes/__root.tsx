@@ -7,6 +7,7 @@ import {
 } from "@tanstack/react-router";
 import type { ReactNode } from "react";
 import appCssText from "@/styles/app.css?inline";
+import faviconUrl from "@/assets/favicon.png";
 import { NotFound } from "@/components/not-found";
 import { ErrorPage } from "@/components/error-page";
 import { getAllSettings } from "@/lib/site-content.functions";
@@ -43,6 +44,10 @@ export const Route = createRootRoute({
 
     return {
       meta,
+      links: [
+        { rel: "icon", type: "image/png", href: faviconUrl },
+        { rel: "apple-touch-icon", href: faviconUrl },
+      ],
     };
   },
   component: RootComponent,
