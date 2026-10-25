@@ -10,7 +10,7 @@ import { FormatDocument, FormatText } from "@/components/ui/format-text";
 import { TourBookingCta, TourPricing, PriceTierCards } from "@/components/tour/tour-pricing";
 import { BestValueTours } from "@/components/tour/best-value-tours";
 import { FaqAccordion } from "@/components/ui/faq-accordion";
-import tripadvisorImg from "@/assets/tripadvisor .webp";
+import tripadvisorImg from "@/assets/tripadvisor.webp";
 import { getTourBySlug, listPublishedPosts, listPublishedTours } from "@/lib/site-content.functions";
 import { getSeoMeta } from "@/lib/seo.functions";
 import { buildSeoMeta } from "@/lib/seo-head";
