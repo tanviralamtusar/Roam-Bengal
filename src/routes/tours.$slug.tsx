@@ -11,6 +11,7 @@ import { TourBookingCta, TourPricing, PriceTierCards } from "@/components/tour/t
 import { BestValueTours } from "@/components/tour/best-value-tours";
 import { FaqAccordion } from "@/components/ui/faq-accordion";
 import tripadvisorImg from "@/assets/tripadvisor.webp";
+import googleReviewsImg from "@/assets/google_reviews_regenerated.webp";
 import { getTourBySlug, listPublishedPosts, listPublishedTours } from "@/lib/site-content.functions";
 import { getSeoMeta } from "@/lib/seo.functions";
 import { buildSeoMeta } from "@/lib/seo-head";
@@ -596,6 +597,15 @@ function TourDetail() {
                 <BestValueTours tours={bestValuePicks} />
               </div>
             ) : null}
+
+            <div className="mt-6 overflow-hidden rounded-2xl border border-rule bg-white shadow-sm">
+              <img
+                src={googleReviewsImg}
+                alt="Google Reviews 4.9 rating"
+                className="block h-auto w-full"
+                loading="lazy"
+              />
+            </div>
           </aside>
         </div>
 
