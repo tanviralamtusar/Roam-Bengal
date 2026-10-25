@@ -10,6 +10,7 @@ import { FormatDocument, FormatText } from "@/components/ui/format-text";
 import { TourBookingCta, TourPricing, PriceTierCards } from "@/components/tour/tour-pricing";
 import { BestValueTours } from "@/components/tour/best-value-tours";
 import { FaqAccordion } from "@/components/ui/faq-accordion";
+import tripadvisorImg from "@/assets/tripadvisor .webp";
 import { getTourBySlug, listPublishedPosts, listPublishedTours } from "@/lib/site-content.functions";
 import { getSeoMeta } from "@/lib/seo.functions";
 import { buildSeoMeta } from "@/lib/seo-head";
@@ -579,6 +580,15 @@ function TourDetail() {
                 Book now
                 <ArrowRight className="h-4 w-4" />
               </ButtonLink>
+            </div>
+
+            <div className="mt-6 overflow-hidden rounded-2xl border border-rule bg-white shadow-sm">
+              <img
+                src={tripadvisorImg}
+                alt="Tripadvisor 2021 Certificate of Excellence"
+                className="block h-auto w-full"
+                loading="lazy"
+              />
             </div>
 
             {bestValuePicks.length ? (
