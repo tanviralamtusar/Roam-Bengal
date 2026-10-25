@@ -43,7 +43,7 @@ export function SiteFooter() {
             src={footer.logo_url || "/logo-white.png"}
             alt={logoMeta.alt || header.logo_alt}
             title={logoMeta.title || undefined}
-            className="h-14 w-auto"
+            className="h-[60px] w-auto max-w-full object-contain object-left sm:h-[80px]"
           />
           {/* Left-aligned against the base `p { text-align: justify }`: this column is only
               260px wide, and justifying prose that narrow stretches single spaces into
