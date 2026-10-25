@@ -55,6 +55,41 @@
   .cta-pulse-glow:hover { animation: none; }
 }
 
+/* Booking popup: pops up from slightly below and smaller, and the backdrop fades in.
+   `data-closing` plays it in reverse before the dialog is actually closed. */
+.booking-dialog[open] {
+  animation: booking-pop-in 0.32s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.booking-dialog[open]::backdrop {
+  animation: booking-fade 0.32s ease-out both;
+}
+.booking-dialog[data-closing] {
+  animation: booking-pop-out 0.2s ease-in both;
+}
+.booking-dialog[data-closing]::backdrop {
+  animation: booking-fade 0.2s ease-in reverse both;
+}
+
+@keyframes booking-pop-in {
+  from { opacity: 0; transform: translateY(24px) scale(0.94); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+@keyframes booking-pop-out {
+  from { opacity: 1; transform: translateY(0) scale(1); }
+  to { opacity: 0; transform: translateY(16px) scale(0.96); }
+}
+@keyframes booking-fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .booking-dialog[open],
+  .booking-dialog[open]::backdrop,
+  .booking-dialog[data-closing],
+  .booking-dialog[data-closing]::backdrop { animation: none; }
+}
+
 /* Trip builder region slider: each region's cards fade/slide in when switched to. */
 @keyframes tripSlideIn {
   from { opacity: 0; transform: translateX(12px); }

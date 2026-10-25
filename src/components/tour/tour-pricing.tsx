@@ -1,4 +1,5 @@
-import { ButtonLink } from "@/components/ui/button";
+import { Button } from "@/components/ui/button";
+import { BookingDialog } from "@/components/tour/booking-dialog";
 import { FormatText } from "@/components/ui/format-text";
 import { FeatureIcon } from "@/components/art/icons";
 import { useSiteSettings } from "@/hooks/use-site-settings";
@@ -179,7 +180,7 @@ export function TourPricing({ tour }: { tour: TourDTO }) {
   );
 }
 
-export function TourBookingCta({ tour }: { tour: TourDTO }) {
+export function TourBookingCta({ tour, tours }: { tour: TourDTO; tours: TourDTO[] }) {
   const { tour_pricing: copy } = useSiteSettings();
 
   return (
@@ -190,14 +191,20 @@ export function TourBookingCta({ tour }: { tour: TourDTO }) {
           <h3 className="font-display text-[clamp(1.15rem,2.4vw,1.5rem)] font-bold text-white">
             {copy.cta_heading}
           </h3>
-          <ButtonLink
-            to="/contact"
-            variant="ember"
-            search={{ tour: tour.slug }}
-            className="mt-5 w-full sm:w-auto sm:min-w-[320px]"
-          >
-            {copy.cta_label} →
-          </ButtonLink>
+          <BookingDialog
+            tour={tour}
+            tours={tours}
+            trigger={(open) => (
+              <Button
+                type="button"
+                variant="ember"
+                onClick={open}
+                className="mt-5 w-full sm:w-auto sm:min-w-[320px]"
+              >
+                {copy.cta_label} →
+              </Button>
+            )}
+          />
           {copy.cta_footnote ? (
             <p className="mt-4 flex items-center justify-center gap-1.5 text-center text-[0.8rem] text-white/75">
               <svg

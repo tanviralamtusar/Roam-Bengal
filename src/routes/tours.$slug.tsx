@@ -4,7 +4,8 @@ import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { WhatsAppFloat } from "@/components/whatsapp-float";
 import { TourCard, formatPrice } from "@/components/tour-card";
-import { ButtonLink } from "@/components/ui/button";
+import { Button } from "@/components/ui/button";
+import { BookingDialog } from "@/components/tour/booking-dialog";
 import { PhotoFrame, gradientFor } from "@/components/ui/photo-frame";
 import { FormatDocument, FormatText } from "@/components/ui/format-text";
 import { TourBookingCta, TourPricing, PriceTierCards } from "@/components/tour/tour-pricing";
@@ -503,7 +504,7 @@ function TourDetail() {
               ) : null}
 
               {tour.priceTiers.some((tier) => tier.label || tier.price !== null) ? (
-                <TourBookingCta tour={tour} />
+                <TourBookingCta tour={tour} tours={allTours} />
               ) : null}
             </div>
           </main>
@@ -572,15 +573,21 @@ function TourDetail() {
                 </ul>
               ) : null}
 
-              <ButtonLink
-                to="/contact"
-                variant="ember"
-                className="mt-6 w-full cta-pulse-glow hover:scale-[1.05]"
-                search={{ tour: tour.slug }}
-              >
-                Book now
-                <ArrowRight className="h-4 w-4" />
-              </ButtonLink>
+              <BookingDialog
+                tour={tour}
+                tours={allTours}
+                trigger={(open) => (
+                  <Button
+                    type="button"
+                    variant="ember"
+                    onClick={open}
+                    className="mt-6 w-full cta-pulse-glow hover:scale-[1.05]"
+                  >
+                    Book now
+                    <ArrowRight className="h-4 w-4" />
+                  </Button>
+                )}
+              />
             </div>
 
             <div className="mt-6 overflow-hidden rounded-2xl border border-rule bg-white shadow-sm">
