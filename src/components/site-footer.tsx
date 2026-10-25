@@ -4,13 +4,14 @@ import { isExternal, normalizePath } from "@/components/ui/button";
 import { FormatText } from "@/components/ui/format-text";
 import { useSiteSettings } from "@/hooks/use-site-settings";
 import { imageMeta } from "@/lib/image-meta";
-import { Mail, MapPin, MessageCircle, Phone, type LucideIcon } from "lucide-react";
+import { Mail, MapPin, Phone, type LucideIcon } from "lucide-react";
 
 // Contact rows are plain CMS links (phone, email, address), so the icon is
 // inferred from the label/href rather than stored alongside it.
 function contactIcon(label: string, to: string): LucideIcon {
   const text = `${label} ${to}`.toLowerCase();
-  if (text.includes("whatsapp") || text.includes("wa.me")) return MessageCircle;
+  // WhatsApp links show the phone number, so they get the call icon too.
+  if (text.includes("whatsapp") || text.includes("wa.me")) return Phone;
   if (text.includes("mailto:") || /\S+@\S+\.\S+/.test(text)) return Mail;
   if (text.includes("tel:")) return Phone;
   // Anything else in the contact column is the office address.
