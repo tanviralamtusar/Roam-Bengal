@@ -516,10 +516,10 @@ function TourDetail() {
                   digits sit on it at full cap height. */}
               <div className="flex items-baseline-last justify-between gap-4">
                 <div>
-                  <div className="font-display text-[1.75rem] leading-tight font-bold text-green">
+                  <div className="font-body text-[1.75rem] leading-tight font-bold text-green">
                     Tour Cost
                   </div>
-                  <div className="mt-0.5 font-display text-[0.9rem] leading-[1.2] text-muted">
+                  <div className="mt-0.5 font-body text-[0.9rem] leading-[1.2] text-muted">
                     Adult* From
                   </div>
                 </div>
