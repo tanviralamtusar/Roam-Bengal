@@ -29,16 +29,6 @@ export function SiteFooter() {
     { label: "24/7 Customer Support", to: "/customer-support" },
   ];
 
-  const guestSupportLinks = [
-    { label: "Licensed Tour Operator", to: "/licensed-tour-operator" },
-    { label: "Secure Payment Gateway", to: "/secure-payment-gateway" },
-  ];
-
-  const travelEssentialLinks = [
-    { label: "Rentals & Tickets", to: "/rentals-tickets" },
-    { label: "Responsible Travel", to: "/responsible-travel" },
-  ];
-
   return (
     <footer
       className="shell pt-14 pb-[26px] text-white"
@@ -80,7 +70,7 @@ export function SiteFooter() {
             <h4 className="mb-3.5 text-[0.8rem] font-bold tracking-[0.06em] text-gold uppercase">
               {col.title}
             </h4>
-            {[...col.links, ...(col.title.trim().toLowerCase() === "guest support" ? guestSupportLinks : col.title.trim().toLowerCase() === "travel essential" ? travelEssentialLinks : [])]
+            {col.links
               // A link saved without a destination renders as `<Link to="">`, which just
               // reloads the current page. Drop those (and fully blank rows) rather than
               // show a dead link.
