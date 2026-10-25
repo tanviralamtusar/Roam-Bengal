@@ -221,6 +221,7 @@ export function TripBuilderSection(_props: HomeSectionProps) {
           backgroundSize: "100% auto",
         }}
       />
+      <div aria-hidden="true" className="pointer-events-none absolute inset-0 z-0 bg-black/40" />
       <div className="wide relative z-10">
         <div
           aria-label="Ready-made trip ideas"
