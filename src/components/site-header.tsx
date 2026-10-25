@@ -75,7 +75,7 @@ export function SiteHeader({
             src={logoSrc}
             alt={logoAlt}
             title={logoTitle || undefined}
-            className="h-[52px] w-auto shrink-0 drop-shadow-[0_3px_8px_rgba(0,0,0,0.25)]"
+            className="h-[60px] w-auto sm:h-[80px] shrink-0 drop-shadow-[0_3px_8px_rgba(0,0,0,0.25)]"
           />
         </Link>
 
