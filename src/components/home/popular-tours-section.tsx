@@ -8,9 +8,11 @@ import type { HomeSectionProps } from "./registry";
 
 export function PopularToursSection({ tours }: HomeSectionProps) {
   const { homepage } = useSiteSettings();
+  // Featured day tours first, topped up with other day tours to fill six slots.
   const featuredTours = tours
-    .filter((tour) => tour.category === "day-tour" && tour.isFeatured)
-    .slice(0, 3);
+    .filter((tour) => tour.category === "day-tour")
+    .sort((a, b) => Number(b.isFeatured) - Number(a.isFeatured))
+    .slice(0, 6);
 
   return (
     <section id="packages" className="shell relative overflow-hidden pt-20 pb-[60px] text-center">

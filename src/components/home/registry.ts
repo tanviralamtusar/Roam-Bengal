@@ -60,7 +60,7 @@ export const HOME_SECTIONS: Record<HomeSectionId, HomeSectionMeta> = {
   },
   popularTours: {
     label: "Popular tours",
-    blurb: "Up to three featured tours, with a link to the full tours page.",
+    blurb: "Up to six day tours (featured first), with a link to the full tours page.",
     Component: PopularToursSection,
   },
   gallery: {
