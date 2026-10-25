@@ -4,6 +4,18 @@ import { isExternal, normalizePath } from "@/components/ui/button";
 import { FormatText } from "@/components/ui/format-text";
 import { useSiteSettings } from "@/hooks/use-site-settings";
 import { imageMeta } from "@/lib/image-meta";
+import { Mail, MapPin, MessageCircle, Phone, type LucideIcon } from "lucide-react";
+
+// Contact rows are CMS links ("Head Office :- …", "Email :- …"), so the icon is
+// inferred from the label/href rather than stored alongside it.
+function contactIcon(label: string, to: string): LucideIcon | null {
+  const text = `${label} ${to}`.toLowerCase();
+  if (text.includes("whatsapp") || text.includes("wa.me")) return MessageCircle;
+  if (text.includes("email") || text.includes("mailto:")) return Mail;
+  if (text.includes("phone") || text.includes("tel:")) return Phone;
+  if (text.includes("office") || text.includes("address") || text.includes("map")) return MapPin;
+  return null;
+}
 
 export function SiteFooter() {
   const { footer, header } = useSiteSettings();
@@ -51,7 +63,19 @@ export function SiteFooter() {
           </p>
         </div>
 
-        {footer.columns.map((col) => (
+        {footer.columns.map((col) => {
+          const isContact = col.title.trim().toLowerCase() === "contact";
+          const renderLabel = (label: string, to: string) => {
+            const Icon = isContact ? contactIcon(label, to) : null;
+            if (!Icon) return label;
+            return (
+              <span className="flex items-start gap-2">
+                <Icon className="mt-[3px] size-4 shrink-0 text-gold" aria-hidden="true" />
+                <span>{label}</span>
+              </span>
+            );
+          };
+          return (
           <div key={col.title}>
             <h4 className="mb-3.5 text-[0.8rem] font-bold tracking-[0.06em] text-gold uppercase">
               {col.title}
@@ -71,7 +95,7 @@ export function SiteFooter() {
                     ? { target: "_blank", rel: "noreferrer noopener" }
                     : {})}
                 >
-                  {link.label}
+                  {renderLabel(link.label, link.to)}
                 </a>
               ) : (
                 <Link
@@ -79,12 +103,13 @@ export function SiteFooter() {
                   to={normalizePath(link.to)}
                   className="mb-2.5 block text-[0.87rem] opacity-85 transition-opacity hover:opacity-100"
                 >
-                  {link.label}
+                  {renderLabel(link.label, link.to)}
                 </Link>
               ),
             )}
           </div>
-        ))}
+          );
+        })}
       </div>
 
       <div className="wide flex flex-wrap items-center justify-between gap-x-6 gap-y-3 border-t border-white/15 pt-[22px] text-[0.78rem] opacity-60">
