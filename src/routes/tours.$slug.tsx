@@ -510,28 +510,34 @@ function TourDetail() {
               line up with its right edge, keeping a 16px gap to the viewport on narrower screens. */}
           <aside className="lg:sticky lg:top-6 lg:mr-[calc(-1*clamp(0px,calc((100vw-1240px)/2+24px),148px))] lg:h-fit">
             <div className="rounded-2xl border border-rule bg-cream p-6 shadow-sm">
-              <div className="font-display text-[1.75rem] leading-tight font-bold text-green">
-                Tour Cost
-              </div>
-              <div className="mt-2 font-display text-[2.1rem] leading-none font-bold text-green">
-                {(() => {
-                  const price = formatPrice(tour.discountPriceUsd ?? tour.priceUsd);
-                  return price.startsWith("$") ? (
-                    <>
-                      <DollarSign
-                        aria-hidden="true"
-                        className="mr-0.5 inline-block size-[1.45rem] align-[-0.08em]"
-                        strokeWidth={2.5}
-                      />
-                      {price.slice(1)}
-                    </>
-                  ) : (
-                    price
-                  );
-                })()}
-                <span className="ml-1 text-[0.9rem] font-normal text-muted">
-                  / Adult* From
-                </span>
+              {/* The price shares the label block's last baseline, with lining figures so both
+                  digits sit on it at full cap height. */}
+              <div className="flex items-baseline-last justify-between gap-4">
+                <div>
+                  <div className="font-display text-[1.75rem] leading-tight font-bold text-green">
+                    Tour Cost
+                  </div>
+                  <div className="mt-0.5 font-display text-[0.9rem] leading-[1.2] text-muted">
+                    Adult* From
+                  </div>
+                </div>
+                <div className="font-display text-[2.75rem] leading-none font-bold whitespace-nowrap text-green lining-nums">
+                  {(() => {
+                    const price = formatPrice(tour.discountPriceUsd ?? tour.priceUsd);
+                    return price.startsWith("$") ? (
+                      <>
+                        <DollarSign
+                          aria-hidden="true"
+                          className="mr-0.5 inline-block size-[2.35rem] align-[-3px]"
+                          strokeWidth={2.5}
+                        />
+                        {price.slice(1)}
+                      </>
+                    ) : (
+                      price
+                    );
+                  })()}
+                </div>
               </div>
 
               {tour.childPriceUsd !== null ? (
