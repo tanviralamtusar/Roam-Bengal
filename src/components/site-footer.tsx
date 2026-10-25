@@ -6,15 +6,15 @@ import { useSiteSettings } from "@/hooks/use-site-settings";
 import { imageMeta } from "@/lib/image-meta";
 import { Mail, MapPin, MessageCircle, Phone, type LucideIcon } from "lucide-react";
 
-// Contact rows are CMS links ("Head Office :- …", "Email :- …"), so the icon is
+// Contact rows are plain CMS links (phone, email, address), so the icon is
 // inferred from the label/href rather than stored alongside it.
-function contactIcon(label: string, to: string): LucideIcon | null {
+function contactIcon(label: string, to: string): LucideIcon {
   const text = `${label} ${to}`.toLowerCase();
   if (text.includes("whatsapp") || text.includes("wa.me")) return MessageCircle;
-  if (text.includes("email") || text.includes("mailto:")) return Mail;
-  if (text.includes("phone") || text.includes("tel:")) return Phone;
-  if (text.includes("office") || text.includes("address") || text.includes("map")) return MapPin;
-  return null;
+  if (text.includes("mailto:") || /\S+@\S+\.\S+/.test(text)) return Mail;
+  if (text.includes("tel:")) return Phone;
+  // Anything else in the contact column is the office address.
+  return MapPin;
 }
 
 export function SiteFooter() {
