@@ -106,7 +106,7 @@ export function SiteFooter() {
                   key="bangladesh-tourism-board"
                   src={bangladeshTourismImg}
                   alt="Bangladesh Tourism Board"
-                  className="mt-1 mb-2.5 w-[160px] max-w-full rounded bg-white p-1.5"
+                  className="mt-1 mb-2.5 w-[160px] max-w-full"
                 />,
               ];
             })}
