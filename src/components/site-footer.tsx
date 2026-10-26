@@ -149,8 +149,8 @@ export function SiteFooter() {
                 return [
                   item,
                   <div key="trade-license" className="mt-1 mb-2.5">
-                    <div className="text-[0.87rem] font-bold">Trade License</div>
-                    <div className="text-[0.8rem] opacity-85">
+                    <div className="text-[1.05rem] font-bold">Trade License</div>
+                    <div className="text-[0.95rem] opacity-85">
                       Trade License No: {tradeLicense.number}
                     </div>
                   </div>,
