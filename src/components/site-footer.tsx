@@ -8,7 +8,7 @@ import { Mail, MapPin, Phone, type LucideIcon } from "lucide-react";
 import bangladeshTourismImg from "@/assets/bangladesh.png";
 import tripadvisorImg from "@/assets/trip23.png";
 import paymentMethodsImg from "@/assets/payment-methods.png";
-import tradeLicenseImg from "@/assets/trade license.png";
+import tradeLicenseImg from "@/assets/trade-license.png";
 
 // Shown under the office address in the contact column.
 const paymentBadge = { src: paymentMethodsImg, alt: "Secure payment: Visa, Mastercard, American Express, bKash" };
