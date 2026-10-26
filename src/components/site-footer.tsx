@@ -6,6 +6,13 @@ import { useSiteSettings } from "@/hooks/use-site-settings";
 import { imageMeta } from "@/lib/image-meta";
 import { Mail, MapPin, Phone, type LucideIcon } from "lucide-react";
 import bangladeshTourismImg from "@/assets/bangladesh.png";
+import tripadvisorImg from "@/assets/trip23.png";
+
+// Badges rendered under the footer link whose label matches.
+const footerBadges = [
+  { match: /responsible\s*travel/i, src: bangladeshTourismImg, alt: "Bangladesh Tourism Board" },
+  { match: /photo\s*gallery/i, src: tripadvisorImg, alt: "Recommended on Tripadvisor" },
+];
 
 // Contact rows are plain CMS links (phone, email, address), so the icon is
 // inferred from the label/href rather than stored alongside it.
@@ -98,14 +105,15 @@ export function SiteFooter() {
                   {renderLabel(link.label, link.to)}
                 </Link>
               );
-              // The tourism board badge sits directly under the Responsible Travel link.
-              if (!/responsible\s*travel/i.test(link.label)) return [item];
+              // Some links carry a badge directly underneath them.
+              const badge = footerBadges.find((b) => b.match.test(link.label));
+              if (!badge) return [item];
               return [
                 item,
                 <img
-                  key="bangladesh-tourism-board"
-                  src={bangladeshTourismImg}
-                  alt="Bangladesh Tourism Board"
+                  key={badge.alt}
+                  src={badge.src}
+                  alt={badge.alt}
                   className="mt-1 mb-2.5 w-[160px] max-w-full"
                 />,
               ];
