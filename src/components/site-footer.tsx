@@ -8,6 +8,7 @@ import { Mail, MapPin, Phone, type LucideIcon } from "lucide-react";
 import bangladeshTourismImg from "@/assets/bangladesh.png";
 import tripadvisorImg from "@/assets/trip23.png";
 import paymentMethodsImg from "@/assets/payment-methods.png";
+import tradeLicenseImg from "@/assets/trade license.png";
 
 // Shown under the office address in the contact column.
 const paymentBadge = { src: paymentMethodsImg, alt: "Secure payment: Visa, Mastercard, American Express, bKash" };
@@ -22,6 +23,7 @@ const footerBadges = [
     alt: "Recommended on Tripadvisor",
     className: "-ml-5",
   },
+  { match: /custom\s*tour/i, src: tradeLicenseImg, alt: "Trade License No: 555175829717" },
 ];
 
 // Contact rows are plain CMS links (phone, email, address), so the icon is
