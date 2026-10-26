@@ -5,6 +5,7 @@ import { FormatText } from "@/components/ui/format-text";
 import { useSiteSettings } from "@/hooks/use-site-settings";
 import { imageMeta } from "@/lib/image-meta";
 import { Mail, MapPin, Phone, type LucideIcon } from "lucide-react";
+import bangladeshTourismImg from "@/assets/bangladesh.png";
 
 // Contact rows are plain CMS links (phone, email, address), so the icon is
 // inferred from the label/href rather than stored alongside it.
@@ -44,7 +45,7 @@ export function SiteFooter() {
             src={footer.logo_url || "/logo-white.png"}
             alt={logoMeta.alt || header.logo_alt}
             title={logoMeta.title || undefined}
-            className="h-[80px] w-[205px] max-w-full object-contain object-left-top"
+            className="-mt-4 h-[80px] w-[205px] max-w-full object-contain object-left-top"
           />
           {/* Left-aligned against the base `p { text-align: justify }`: this column is only
               260px wide, and justifying prose that narrow stretches single spaces into
@@ -76,8 +77,8 @@ export function SiteFooter() {
               // reloads the current page. Drop those (and fully blank rows) rather than
               // show a dead link.
               .filter((link) => link.label.trim() && link.to.trim())
-              .map((link) =>
-              isExternal(link.to) ? (
+              .flatMap((link) => {
+              const item = isExternal(link.to) ? (
                 <a
                   key={link.label}
                   href={link.to}
@@ -96,8 +97,19 @@ export function SiteFooter() {
                 >
                   {renderLabel(link.label, link.to)}
                 </Link>
-              ),
-            )}
+              );
+              // The tourism board badge sits directly under the Responsible Travel link.
+              if (!/responsible\s*travel/i.test(link.label)) return [item];
+              return [
+                item,
+                <img
+                  key="bangladesh-tourism-board"
+                  src={bangladeshTourismImg}
+                  alt="Bangladesh Tourism Board"
+                  className="mt-1 mb-2.5 w-[160px] max-w-full rounded bg-white p-1.5"
+                />,
+              ];
+            })}
           </div>
           );
         })}
