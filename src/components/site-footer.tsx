@@ -11,7 +11,6 @@ import { SiFacebook, SiInstagram, SiTiktok, SiX } from "react-icons/si";
 import bangladeshTourismImg from "@/assets/bangladesh.png";
 import tripadvisorImg from "@/assets/trip23.png";
 import paymentMethodsImg from "@/assets/payment-methods.png";
-import tradeLicenseImg from "@/assets/trade-license.png";
 
 // Shown under the office address in the contact column.
 const paymentBadge = { src: paymentMethodsImg, alt: "Secure payment: Visa, Mastercard, American Express, bKash" };
@@ -35,8 +34,10 @@ const footerBadges = [
     alt: "Recommended on Tripadvisor",
     className: "-ml-5",
   },
-  { match: /custom\s*tour/i, src: tradeLicenseImg, alt: "Trade License No: 555175829717" },
 ];
+
+// Trade license details, shown as text under the custom tour link.
+const tradeLicense = { match: /custom\s*tour/i, number: "555175829717" };
 
 // Contact rows are plain CMS links (phone, email, address), so the icon is
 // inferred from the label/href rather than stored alongside it.
@@ -144,6 +145,17 @@ export function SiteFooter() {
                   {renderLabel(link.label, link.to)}
                 </Link>
               );
+              if (tradeLicense.match.test(link.label)) {
+                return [
+                  item,
+                  <div key="trade-license" className="mt-1 mb-2.5">
+                    <div className="text-[0.87rem] font-bold">Trade License</div>
+                    <div className="text-[0.8rem] opacity-85">
+                      Trade License No: {tradeLicense.number}
+                    </div>
+                  </div>,
+                ];
+              }
               // Some links carry a badge directly underneath them.
               const badge =
                 isContact && contactIcon(link.label, link.to) === MapPin
