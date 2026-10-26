@@ -5,7 +5,7 @@ import { submitInquiry } from "@/lib/capture.functions";
 import type { TourDTO } from "@/lib/content-types";
 
 /**
- * "Let's Plan Your Journey" — the booking form that opens over the tour page when a
+ * "Let's Book Your Trip" — the booking form that opens over the tour page when a
  * visitor clicks Book Now. It is a native <dialog>, so focus trapping, Esc-to-close and
  * the backdrop come from the browser. Submissions land in `inquiries` like the contact
  * form, with the date and head count in their own columns.
@@ -115,7 +115,7 @@ export function BookingDialog({
             id="booking-title"
             className="mt-1 font-display text-[clamp(1.4rem,3vw,1.75rem)] leading-tight font-bold text-white"
           >
-            Let&apos;s Plan Your Journey
+            Let&apos;s Book Your Trip
           </h2>
           <p className="mt-1 text-[0.86rem] text-white/85">
             A few details to get your Bangladesh adventure started.
