@@ -5,6 +5,9 @@ import { FormatText } from "@/components/ui/format-text";
 import { useSiteSettings } from "@/hooks/use-site-settings";
 import { imageMeta } from "@/lib/image-meta";
 import { Mail, MapPin, Phone, type LucideIcon } from "lucide-react";
+import type { IconType } from "react-icons";
+import { FaLinkedinIn } from "react-icons/fa";
+import { SiFacebook, SiInstagram, SiTiktok, SiX } from "react-icons/si";
 import bangladeshTourismImg from "@/assets/bangladesh.png";
 import tripadvisorImg from "@/assets/trip23.png";
 import paymentMethodsImg from "@/assets/payment-methods.png";
@@ -12,6 +15,15 @@ import tradeLicenseImg from "@/assets/trade-license.png";
 
 // Shown under the office address in the contact column.
 const paymentBadge = { src: paymentMethodsImg, alt: "Secure payment: Visa, Mastercard, American Express, bKash" };
+
+// Social profiles under the intro, each icon in its own brand colour on a white chip.
+const socialLinks: { label: string; href: string; Icon: IconType; color: string }[] = [
+  { label: "Facebook", href: "https://www.facebook.com/", Icon: SiFacebook, color: "#1877F2" },
+  { label: "Instagram", href: "https://www.instagram.com/", Icon: SiInstagram, color: "#E4405F" },
+  { label: "LinkedIn", href: "https://www.linkedin.com/", Icon: FaLinkedinIn, color: "#0A66C2" },
+  { label: "Twitter", href: "https://x.com/", Icon: SiX, color: "#000000" },
+  { label: "TikTok", href: "https://www.tiktok.com/", Icon: SiTiktok, color: "#000000" },
+];
 
 // Badges rendered under the footer link whose label matches.
 const footerBadges = [
@@ -72,6 +84,21 @@ export function SiteFooter() {
           <p className="mt-3.5 max-w-[260px] text-left text-[0.85rem] opacity-70">
             <FormatText>{footer.intro}</FormatText>
           </p>
+          <div className="mt-5 flex flex-wrap gap-2.5">
+            {socialLinks.map(({ label, href, Icon, color }) => (
+              <a
+                key={label}
+                href={href}
+                target="_blank"
+                rel="noreferrer noopener"
+                aria-label={label}
+                title={label}
+                className="grid size-9 place-items-center rounded-full bg-white shadow-sm transition-transform hover:-translate-y-0.5"
+              >
+                <Icon className="size-[18px]" style={{ color }} aria-hidden="true" />
+              </a>
+            ))}
+          </div>
         </div>
 
         {footer.columns.map((col) => {
