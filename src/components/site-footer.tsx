@@ -7,11 +7,21 @@ import { imageMeta } from "@/lib/image-meta";
 import { Mail, MapPin, Phone, type LucideIcon } from "lucide-react";
 import bangladeshTourismImg from "@/assets/bangladesh.png";
 import tripadvisorImg from "@/assets/trip23.png";
+import paymentMethodsImg from "@/assets/payment-methods.png";
+
+// Shown under the office address in the contact column.
+const paymentBadge = { src: paymentMethodsImg, alt: "Secure payment: Visa, Mastercard, American Express, bKash" };
 
 // Badges rendered under the footer link whose label matches.
 const footerBadges = [
   { match: /responsible\s*travel/i, src: bangladeshTourismImg, alt: "Bangladesh Tourism Board" },
-  { match: /photo\s*gallery/i, src: tripadvisorImg, alt: "Recommended on Tripadvisor" },
+  // The Tripadvisor image has wide transparent margins, so pull it left to line up with the links.
+  {
+    match: /photo\s*gallery/i,
+    src: tripadvisorImg,
+    alt: "Recommended on Tripadvisor",
+    className: "-ml-5",
+  },
 ];
 
 // Contact rows are plain CMS links (phone, email, address), so the icon is
@@ -106,7 +116,10 @@ export function SiteFooter() {
                 </Link>
               );
               // Some links carry a badge directly underneath them.
-              const badge = footerBadges.find((b) => b.match.test(link.label));
+              const badge =
+                isContact && contactIcon(link.label, link.to) === MapPin
+                  ? paymentBadge
+                  : footerBadges.find((b) => b.match.test(link.label));
               if (!badge) return [item];
               return [
                 item,
@@ -114,7 +127,7 @@ export function SiteFooter() {
                   key={badge.alt}
                   src={badge.src}
                   alt={badge.alt}
-                  className="mt-1 mb-2.5 w-[160px] max-w-full"
+                  className={`mt-1 mb-2.5 w-[160px] max-w-full ${"className" in badge ? badge.className : ""}`}
                 />,
               ];
             })}
