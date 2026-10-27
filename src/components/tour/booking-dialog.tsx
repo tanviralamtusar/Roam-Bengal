@@ -3,6 +3,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { CalendarDays, ChevronDown, X } from "lucide-react";
 import { submitInquiry } from "@/lib/capture.functions";
 import type { TourDTO } from "@/lib/content-types";
+import { DIAL_CODES, guessCountry } from "@/lib/dial-codes";
 
 /**
  * "Let's Book Your Trip" — the booking form that opens over the tour page when a
@@ -30,6 +31,10 @@ export function BookingDialog({
     "idle",
   );
   const [error, setError] = useState("");
+  // ISO code, not the dial code: +1, +7 and +44 are shared by several countries.
+  const [country, setCountry] = useState("US");
+  const guessed = useRef(false);
+  const dial = DIAL_CODES.find((c) => c.iso === country)?.dial ?? "";
 
   // The current tour is always selectable, even when it is a draft missing from `tours`.
   const options = tours.some((t) => t.slug === tour.slug)
@@ -39,6 +44,12 @@ export function BookingDialog({
 
   function open() {
     if (state !== "sending") setState("idle");
+    // Guessed on first open, not on render, so the server and client markup match and a
+    // country the visitor already picked is never overwritten.
+    if (!guessed.current) {
+      guessed.current = true;
+      setCountry(guessCountry());
+    }
     ref.current?.showModal();
   }
 
@@ -70,6 +81,10 @@ export function BookingDialog({
     const adults = Number(form.get("adults") ?? 1);
     const children = Number(form.get("children") ?? 0);
     const notes = String(form.get("notes") ?? "").trim();
+    // A number typed with its own "+" code wins over the picker.
+    const number = String(form.get("phone") ?? "").trim();
+    const phone =
+      !number || number.startsWith("+") ? number : `${dial} ${number}`;
     const party = `${adults} ${adults === 1 ? "adult" : "adults"}, ${children} ${
       children === 1 ? "child" : "children"
     }`;
@@ -81,7 +96,7 @@ export function BookingDialog({
         data: {
           name: String(form.get("name") ?? ""),
           email: String(form.get("email") ?? ""),
-          phone: String(form.get("phone") ?? ""),
+          phone,
           tour_slug: String(form.get("tour_slug") ?? ""),
           start_date: String(form.get("start_date") ?? ""),
           travelers: adults + children,
@@ -246,14 +261,43 @@ export function BookingDialog({
                 </Control>
 
                 <Control label="WhatsApp number (optional)" htmlFor="bk-phone">
-                  <input
-                    id="bk-phone"
-                    name="phone"
-                    type="tel"
-                    autoComplete="tel"
-                    placeholder="+Country code and number"
-                    className={FIELD}
-                  />
+                  <div className="flex gap-2">
+                    {/* The native <select> sits invisibly over a pill that shows only
+                        the dial code; opening it lists the full country names. */}
+                    <div className="group relative shrink-0">
+                      <div
+                        aria-hidden="true"
+                        className={`${FIELD} flex items-center gap-1.5 pr-9 whitespace-nowrap group-focus-within:border-green group-focus-within:bg-paper`}
+                      >
+                        <span className="font-semibold">{country}</span>
+                        <span className="text-muted">{dial}</span>
+                      </div>
+                      <ChevronDown
+                        aria-hidden="true"
+                        className="pointer-events-none absolute top-1/2 right-3.5 h-4 w-4 -translate-y-1/2 text-green"
+                      />
+                      <select
+                        aria-label="Country code"
+                        value={country}
+                        onChange={(e) => setCountry(e.target.value)}
+                        className="absolute inset-0 cursor-pointer opacity-0"
+                      >
+                        {DIAL_CODES.map((c) => (
+                          <option key={c.iso} value={c.iso}>
+                            {c.name} ({c.dial})
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                    <input
+                      id="bk-phone"
+                      name="phone"
+                      type="tel"
+                      autoComplete="tel-national"
+                      placeholder="Phone number"
+                      className={`${FIELD} min-w-0`}
+                    />
+                  </div>
                 </Control>
 
                 <Control
