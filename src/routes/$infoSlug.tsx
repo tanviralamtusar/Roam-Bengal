@@ -51,14 +51,12 @@ function InfoRoute() {
   const draft = faqPreviewChannel.useDraft(true);
   const faqs = draft ? [draft, ...saved.filter((f) => f.id !== draft.id)] : saved;
 
-  // The FAQ page builds its blocks from the `faqs` table rather than static copy.
+  // The FAQ page builds its blocks from the `faqs` table rather than static copy. Any rich-text
+  // `body` is kept — `PolicyLayout` shows it as an intro above the questions on this page.
   const withFaqs =
     slug === "travel-faqs" && faqs.length
       ? {
           ...page,
-          // `PolicyLayout` prefers `body` over `blocks`, so a rich-text body saved for this key
-          // would hide the questions entirely. The table is the content here, so drop it.
-          body: undefined,
           blocks: faqs.map((f) => ({
             heading: f.question,
             paragraphs: [f.answer],

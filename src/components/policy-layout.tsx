@@ -61,7 +61,10 @@ export function PolicyLayout({
           <div className="blog-body mt-10">
             <FormatDocument>{page.body}</FormatDocument>
           </div>
-        ) : (
+        ) : null}
+        {/* On the FAQ page the questions come from the `faqs` table, so they show alongside
+            the body; elsewhere `body` replaces the legacy `blocks`. */}
+        {page.body?.trim() && !faqPage ? null : (
         <div className="mt-10 flex flex-col gap-10">
           {faqPage ? (
             <FaqAccordion
@@ -98,7 +101,7 @@ export function PolicyLayout({
             ))
           )}
 
-          {page.blocks.length === 0 ? (
+          {page.blocks.length === 0 && !page.body?.trim() ? (
             <p className="rounded-xl border border-dashed border-rule p-8 text-center text-[0.92rem] text-muted">
               This page is being written. Message us in the meantime — we will answer
               directly.
