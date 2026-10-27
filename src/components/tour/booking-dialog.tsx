@@ -103,6 +103,8 @@ export function BookingDialog({
           name: String(form.get("name") ?? ""),
           email: String(form.get("email") ?? ""),
           phone,
+          country:
+            DIAL_CODES.find((c) => c.iso === form.get("country"))?.name ?? "",
           tour_slug: String(form.get("tour_slug") ?? ""),
           start_date: String(form.get("start_date") ?? ""),
           travelers: adults + children,
@@ -264,6 +266,27 @@ export function BookingDialog({
                     placeholder="you@example.com"
                     className={FIELD}
                   />
+                </Control>
+
+                <Control label="Country" htmlFor="bk-country">
+                  <SelectBox
+                    id="bk-country"
+                    name="country"
+                    required
+                    autoComplete="country"
+                    defaultValue=""
+                    // Picking a country also sets the WhatsApp dial code below.
+                    onChange={(e) => setCountry(e.target.value)}
+                  >
+                    <option value="" disabled>
+                      Select your country
+                    </option>
+                    {DIAL_CODES.map((c) => (
+                      <option key={c.iso} value={c.iso}>
+                        {c.name}
+                      </option>
+                    ))}
+                  </SelectBox>
                 </Control>
 
                 <Control label="WhatsApp number (optional)" htmlFor="bk-phone">
