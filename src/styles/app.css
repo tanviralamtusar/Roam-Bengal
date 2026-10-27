@@ -83,6 +83,12 @@
   to { opacity: 1; }
 }
 
+/* Slim green scrollbar for the popup body when the form is taller than the screen. */
+.booking-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in oklab, var(--color-green) 55%, transparent) transparent;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .booking-dialog[open],
   .booking-dialog[open]::backdrop,
