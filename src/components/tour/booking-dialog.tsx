@@ -1,6 +1,12 @@
 import { useRef, useState, type ReactNode } from "react";
 import { useServerFn } from "@tanstack/react-start";
-import { CalendarDays, ChevronDown, X } from "lucide-react";
+import {
+  ArrowRight,
+  CalendarDays,
+  ChevronDown,
+  LoaderCircle,
+  X,
+} from "lucide-react";
 import { submitInquiry } from "@/lib/capture.functions";
 import type { TourDTO } from "@/lib/content-types";
 import { DIAL_CODES, guessCountry } from "@/lib/dial-codes";
@@ -324,9 +330,25 @@ export function BookingDialog({
               <button
                 type="submit"
                 disabled={state === "sending"}
-                className={`${SUBMIT} mt-5 w-full`}
+                className={`${SUBMIT} booking-cta group mt-5 w-full gap-2`}
               >
-                {state === "sending" ? "Sending…" : "Continue Booking"}
+                {state === "sending" ? (
+                  <>
+                    <LoaderCircle
+                      aria-hidden="true"
+                      className="h-4 w-4 animate-spin motion-reduce:animate-none"
+                    />
+                    Sending…
+                  </>
+                ) : (
+                  <>
+                    Continue Booking
+                    <ArrowRight
+                      aria-hidden="true"
+                      className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1 motion-reduce:transition-none"
+                    />
+                  </>
+                )}
               </button>
             </form>
           )}
@@ -341,11 +363,13 @@ const FIELD =
   "font-body text-[0.9rem] text-ink outline-none placeholder:text-muted " +
   "transition-colors focus:border-green focus:bg-paper";
 
-/** The ember pill, matching the tour page's Book now button. */
+/** The ember pill, matching the tour page's Book now button. Lifts on hover, presses on click. */
 const SUBMIT =
   "inline-flex cursor-pointer items-center justify-center rounded-[30px] bg-ember px-6 py-3 " +
-  "text-[0.9rem] font-semibold text-white transition-colors duration-200 hover:bg-[#D55E18] " +
-  "disabled:cursor-wait disabled:opacity-70";
+  "text-[0.9rem] font-semibold text-white transition-[background-color,box-shadow,transform] " +
+  "duration-200 hover:-translate-y-0.5 hover:bg-[#D55E18] hover:shadow-[0_8px_20px_-6px_rgba(213,94,24,0.6)] " +
+  "active:translate-y-0 active:scale-[0.98] motion-reduce:transform-none " +
+  "disabled:cursor-wait disabled:opacity-70 disabled:hover:translate-y-0 disabled:hover:shadow-none";
 
 function Control({
   label,
