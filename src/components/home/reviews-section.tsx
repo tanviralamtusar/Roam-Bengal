@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type CSSProperties } from "react";
 import { ChevronLeft, ChevronRight, Quote, Send } from "lucide-react";
 import { FaStar } from "react-icons/fa";
 import { SiFacebook, SiGoogle, SiTripadvisor, SiTrustpilot } from "react-icons/si";
@@ -43,13 +43,34 @@ export function ReviewsSection({ testimonials }: HomeSectionProps) {
   const rightMeta = imageMeta(homepage, "reviews_photo_right");
   const featured = testimonials.filter((t) => t.isFeatured);
   const pool = (featured.length ? featured : testimonials).slice(0, MAX_REVIEWS);
-  const slides = chunk(pool, PER_SLIDE);
+  const pageCount = Math.ceil(pool.length / PER_SLIDE);
 
+  // One row of cards serves both layouts: from `nav` up it pages three at a time, below
+  // it one card at a time. Each keeps its own position, so the CSS for the breakpoint
+  // in force picks which one the row follows — nothing is decided in JS from the
+  // viewport, so the server render already matches whichever layout the visitor sees.
   const [slide, setSlide] = useState(0);
+  const [card, setCard] = useState(0);
   // Clamped on read rather than corrected in an effect: under the admin's live preview
   // the testimonial list can shrink while a later slide is showing.
-  const current = slides.length ? Math.min(slide, slides.length - 1) : 0;
-  const go = (next: number) => setSlide((next + slides.length) % slides.length);
+  const current = pageCount ? Math.min(slide, pageCount - 1) : 0;
+  const currentCard = pool.length ? Math.min(card, pool.length - 1) : 0;
+  const go = (next: number) => setSlide((next + pageCount) % pageCount);
+  const goCard = (next: number) => setCard((next + pool.length) % pool.length);
+
+  // Swipe: a mostly-horizontal drag of 40px or more steps whichever slider is showing.
+  const touchStart = useRef<{ x: number; y: number } | null>(null);
+  const onTouchEnd = (e: React.TouchEvent) => {
+    const start = touchStart.current;
+    touchStart.current = null;
+    const touch = e.changedTouches[0];
+    if (!start || !touch) return;
+    const dx = touch.clientX - start.x;
+    if (Math.abs(dx) < 40 || Math.abs(dx) < Math.abs(touch.clientY - start.y)) return;
+    const step = dx < 0 ? 1 : -1;
+    if (window.matchMedia("(min-width: 980px)").matches) go(current + step);
+    else goCard(currentCard + step);
+  };
 
   return (
     <section
@@ -128,9 +149,9 @@ export function ReviewsSection({ testimonials }: HomeSectionProps) {
             })}
           </div>
 
-          {slides.length ? (
+          {pool.length ? (
             <div className="relative mt-[46px]">
-              {slides.length > 1 ? (
+              {pageCount > 1 ? (
                 <>
                   <ArrowButton
                     direction="prev"
@@ -145,51 +166,83 @@ export function ReviewsSection({ testimonials }: HomeSectionProps) {
                 </>
               ) : null}
 
-              <div className="overflow-hidden nav:mx-10">
+              {/* Wraps just the cards, so the one-up arrows centre on the card rather than
+                  on the card plus the dots below. They sit over the card's 28px side
+                  padding, clear of its text. */}
+              <div className="relative">
+                {pool.length > 1 ? (
+                  <>
+                    <ArrowButton
+                      direction="prev"
+                      onClick={() => goCard(currentCard - 1)}
+                      className="absolute top-1/2 -left-5 z-[3] flex -translate-y-1/2 nav:hidden"
+                    />
+                    <ArrowButton
+                      direction="next"
+                      onClick={() => goCard(currentCard + 1)}
+                      className="absolute top-1/2 -right-5 z-[3] flex -translate-y-1/2 nav:hidden"
+                    />
+                  </>
+                ) : null}
+
                 <div
-                  className="flex transition-transform duration-500 ease-out"
-                  style={{ transform: `translateX(-${current * 100}%)` }}
+                  className="overflow-hidden nav:mx-10"
+                  onTouchStart={(e) => {
+                    const touch = e.touches[0];
+                    touchStart.current = touch ? { x: touch.clientX, y: touch.clientY } : null;
+                  }}
+                  onTouchEnd={onTouchEnd}
                 >
-                  {slides.map((group, i) => (
-                    <div
-                      key={i}
-                      className="grid w-full shrink-0 items-stretch gap-[22px] nav:grid-cols-3"
-                      // Off-screen slides are inert, so tabbing never lands on a card
-                      // nobody can see.
-                      inert={i !== current}
-                    >
-                      {group.map((t, j) => (
-                        <ReviewCard key={t.id} review={t} tint={i * PER_SLIDE + j} />
-                      ))}
-                    </div>
-                  ))}
+                  {/* Each step moves the row one viewport plus one gap: a card below `nav`,
+                      a page of three from `nav` up. */}
+                  <div
+                    className="flex translate-x-(--card-x) gap-4 transition-transform duration-500 ease-out nav:translate-x-(--page-x) nav:gap-[22px]"
+                    style={
+                      {
+                        "--card-x": `calc(${currentCard} * (-100% - 1rem))`,
+                        "--page-x": `calc(${current} * (-100% - 22px))`,
+                      } as CSSProperties
+                    }
+                  >
+                    {pool.map((t, i) => (
+                      <div
+                        key={t.id}
+                        // Off-screen cards are hidden from tabbing and screen readers. As a
+                        // visibility transition, hiding waits out the slide, so a card stays
+                        // painted while it moves away.
+                        className={`w-full shrink-0 transition-[visibility] duration-500 nav:w-[calc((100%-44px)/3)] ${
+                          i === currentCard ? "" : "max-nav:invisible"
+                        } ${Math.floor(i / PER_SLIDE) === current ? "" : "nav:invisible"}`}
+                      >
+                        <ReviewCard review={t} tint={i} />
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </div>
 
-              {slides.length > 1 ? (
-                <div className="mt-7 flex items-center justify-center gap-2">
-                  <ArrowButton
-                    direction="prev"
-                    onClick={() => go(current - 1)}
-                    className="mr-1 flex nav:hidden"
-                  />
-                  {slides.map((_, i) => (
-                    <button
+              {pageCount > 1 ? (
+                <div className="mt-7 hidden items-center justify-center gap-2 nav:flex">
+                  {Array.from({ length: pageCount }, (_, i) => (
+                    <Dot
                       key={i}
-                      type="button"
+                      active={i === current}
                       onClick={() => setSlide(i)}
-                      aria-label={`Show reviews ${i + 1} of ${slides.length}`}
-                      aria-current={i === current}
-                      className={`h-2 cursor-pointer rounded-full transition-all duration-300 ${
-                        i === current ? "w-[26px] bg-gold" : "w-2 bg-ink/15 hover:bg-ink/25"
-                      }`}
+                      label={`Show reviews ${i + 1} of ${pageCount}`}
                     />
                   ))}
-                  <ArrowButton
-                    direction="next"
-                    onClick={() => go(current + 1)}
-                    className="ml-1 flex nav:hidden"
-                  />
+                </div>
+              ) : null}
+              {pool.length > 1 ? (
+                <div className="mt-6 flex items-center justify-center gap-2 nav:hidden">
+                  {pool.map((t, i) => (
+                    <Dot
+                      key={t.id}
+                      active={i === currentCard}
+                      onClick={() => setCard(i)}
+                      label={`Show review ${i + 1} of ${pool.length}`}
+                    />
+                  ))}
                 </div>
               ) : null}
             </div>
@@ -358,6 +411,20 @@ function ArrowButton({
   );
 }
 
+function Dot({ active, onClick, label }: { active: boolean; onClick: () => void; label: string }) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      aria-label={label}
+      aria-current={active}
+      className={`h-2 cursor-pointer rounded-full transition-all duration-300 ${
+        active ? "w-[26px] bg-gold" : "w-2 bg-ink/15 hover:bg-ink/25"
+      }`}
+    />
+  );
+}
+
 /**
  * A tilted print taped to the edge of the band, half off-page. Decorative, so it only
  * appears where there is margin to hold it without crowding the cards.
@@ -496,9 +563,3 @@ const TOPO_CLUSTERS = [
   { cx: 1255, cy: 205, rotate: 14 },
   { cx: 720, cy: 700, rotate: -6 },
 ];
-
-function chunk<T>(items: T[], size: number): T[][] {
-  const out: T[][] = [];
-  for (let i = 0; i < items.length; i += size) out.push(items.slice(i, i + size));
-  return out;
-}
