@@ -102,7 +102,7 @@ function Reviews() {
             <RiverArt className="absolute bottom-[-10px] left-5 z-[1] h-[190px] w-[190px] opacity-90 max-[900px]:hidden" />
             <LeafArt className="absolute top-[-10px] right-5 z-[1] h-[190px] w-[190px] opacity-90 max-[900px]:hidden" />
 
-            <div className="relative z-[2] mx-auto max-w-[900px]">
+            <div className="relative z-[2] mx-auto max-w-[900px] px-5 min-[640px]:px-10">
               <h1 className="mb-4 font-display text-[clamp(2rem,4.2vw,3rem)] leading-[1.2] font-bold">
                 {reviews.heading_1}
                 <br />

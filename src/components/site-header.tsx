@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import { Link, useRouterState } from "@tanstack/react-router";
 import { ButtonLink, normalizePath } from "@/components/ui/button";
 import { useSiteSettings } from "@/hooks/use-site-settings";
@@ -125,7 +126,10 @@ export function SiteHeader({
         </button>
       </nav>
 
-      {open ? (
+      {/* Portalled to <body>: several pages wrap the header in a `relative z-[1]` layer,
+          which would trap the drawer's `z-50` beneath fixed page chrome such as the
+          WhatsApp pill. It only mounts after a tap, so there is no server render to match. */}
+      {open ? createPortal(
         <div className="fixed inset-0 z-50 nav:hidden">
           <button
             type="button"
@@ -206,7 +210,8 @@ export function SiteHeader({
               {header.cta_label}
             </ButtonLink>
           </div>
-        </div>
+        </div>,
+        document.body,
       ) : null}
     </header>
   );

@@ -21,7 +21,7 @@ return (
       <SectionHead kicker={homepage.holiday_kicker}>{homepage.holiday_heading}</SectionHead>
 
       {holidayTours.length ? (
-        <div className="wide grid gap-[26px] text-left nav:grid-cols-3">
+        <div className="wide grid gap-[26px] text-left md:grid-cols-2 nav:grid-cols-3">
           {holidayTours.map((tour, i) => (
             <TourCard key={tour.id} tour={tour} gradientCss={TOUR_FRAMES[i % 3]} />
           ))}

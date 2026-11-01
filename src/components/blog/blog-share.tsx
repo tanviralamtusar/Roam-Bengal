@@ -4,7 +4,7 @@ import { FacebookIcon, TwitterIcon, LinkedinIcon, WhatsappIcon, TelegramIcon, Em
 export function BlogShare({ url, title }: { url: string; title: string }) {
   return (
     <div className="flex items-center gap-3">
-      <span className="text-[0.8rem] font-bold text-ink">Share on:</span>
+      <span className="text-[0.8rem] font-bold text-white/85">Share on:</span>
       <div className="flex items-center gap-1.5">
         <FacebookShareButton url={url} title={title}>
           <FacebookIcon size={24} round />

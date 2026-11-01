@@ -89,7 +89,9 @@ export function ReviewsSection({ testimonials }: HomeSectionProps) {
             <FormatText>{homepage.reviews_subtext}</FormatText>
           </p>
 
-          <div className="mt-8 flex flex-wrap justify-center gap-4">
+          {/* A 2×2 grid on phones, where two 190px pills cannot share a row and would
+              otherwise stack four deep. */}
+          <div className="mt-8 grid grid-cols-2 gap-3 sm:flex sm:flex-wrap sm:justify-center sm:gap-4">
             {reviews.platforms.map((p) => {
               const key = p.name.toLowerCase().replace(/[^a-z]/g, "");
               const Logo = PLATFORM_LOGOS[key];
@@ -99,10 +101,10 @@ export function ReviewsSection({ testimonials }: HomeSectionProps) {
               return (
                 <div
                   key={p.name}
-                  className="flex min-w-[190px] items-center gap-3 rounded-[14px] bg-paper px-[18px] py-3.5 text-left shadow-[0_6px_20px_rgba(32,41,31,0.07)]"
+                  className="flex min-w-0 items-center gap-2.5 rounded-[14px] bg-paper px-3 py-3 text-left shadow-[0_6px_20px_rgba(32,41,31,0.07)] sm:min-w-[190px] sm:gap-3 sm:px-[18px] sm:py-3.5"
                 >
                   <span
-                    className="flex h-8 w-8 shrink-0 items-center justify-center text-[1.55rem]"
+                    className="flex h-7 w-7 shrink-0 items-center justify-center text-[1.35rem] sm:h-8 sm:w-8 sm:text-[1.55rem]"
                     style={{ color: colour }}
                     aria-hidden="true"
                   >
@@ -110,7 +112,7 @@ export function ReviewsSection({ testimonials }: HomeSectionProps) {
                   </span>
                   <span className="min-w-0">
                     <span className="block text-[0.95rem] font-semibold text-ink">{p.name}</span>
-                    <span className="mt-0.5 flex items-center gap-1.5">
+                    <span className="mt-0.5 flex flex-wrap items-center gap-x-1.5">
                       <ScoreStars
                         score={Number(p.score) || 5}
                         colour={colour}

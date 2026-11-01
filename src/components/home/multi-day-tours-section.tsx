@@ -21,7 +21,7 @@ return (
       <SectionHead kicker={homepage.multiday_kicker}>{homepage.multiday_heading}</SectionHead>
 
       {multiDayTours.length ? (
-        <div className="wide grid gap-[26px] text-left nav:grid-cols-3">
+        <div className="wide grid gap-[26px] text-left md:grid-cols-2 nav:grid-cols-3">
           {multiDayTours.map((tour, i) => (
             <TourCard key={tour.id} tour={tour} gradientCss={TOUR_FRAMES[i % 3]} />
           ))}

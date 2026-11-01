@@ -14,7 +14,7 @@ export function JournalSection({ posts }: HomeSectionProps) {
     <section id="blog" className="shell pt-20 pb-[30px] text-center">
       <SectionHead kicker={homepage.journal_kicker}>{homepage.journal_heading}</SectionHead>
 
-      <div className="wide grid gap-[26px] nav:grid-cols-3">
+      <div className="wide grid gap-[26px] sm:grid-cols-2 nav:grid-cols-3">
         {journalPosts.map((post, i) => (
           <Link
             key={post.id}

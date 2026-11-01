@@ -16,7 +16,7 @@ export function FeaturesSection(_props: HomeSectionProps) {
   ];
   return (
     <section className="shell pt-[70px] pb-[60px] nav:pt-[60px]" style={{ background: FEATURE_BG }}>
-      <div className="wide grid grid-cols-3 gap-6 nav:grid-cols-8 nav:gap-2.5">
+      <div className="wide grid grid-cols-2 gap-x-4 gap-y-7 sm:grid-cols-4 sm:gap-6 nav:grid-cols-8 nav:gap-2.5">
         {features.map((f) => (
           <div key={f.title} className="text-center">
             <span className="mx-auto mb-3 flex h-[52px] w-[52px] items-center justify-center rounded-full bg-orange text-white">

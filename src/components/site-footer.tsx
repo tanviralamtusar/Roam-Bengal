@@ -1,4 +1,4 @@
-import type { CSSProperties } from "react";
+import { Fragment, type CSSProperties } from "react";
 import { Link } from "@tanstack/react-router";
 import { isExternal, normalizePath } from "@/components/ui/button";
 import { FormatText } from "@/components/ui/format-text";
@@ -107,10 +107,22 @@ export function SiteFooter() {
           const renderLabel = (label: string, to: string) => {
             const Icon = isContact ? contactIcon(label, to) : null;
             if (!Icon) return label;
+            // On a phone the column is ~130px, narrower than an email address, which has no
+            // break opportunity of its own. Offer the conventional ones, before "@" and ".",
+            // and let anything still too long break wherever it must rather than run off
+            // the screen.
+            const parts = label.includes("@") ? label.split(/(?=[@.])/) : [label];
             return (
               <span className="flex items-start gap-2">
                 <Icon className="mt-[3px] size-4 shrink-0 text-gold" aria-hidden="true" />
-                <span>{label}</span>
+                <span className="min-w-0 [overflow-wrap:anywhere]">
+                  {parts.map((part, i) => (
+                    <Fragment key={i}>
+                      {i ? <wbr /> : null}
+                      {part}
+                    </Fragment>
+                  ))}
+                </span>
               </span>
             );
           };

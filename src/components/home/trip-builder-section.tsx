@@ -310,7 +310,9 @@ export function TripBuilderSection(_props: HomeSectionProps) {
                           }`}
                         />
                         <span
-                          className={`min-w-0 truncate text-[0.78rem] font-bold uppercase tracking-[0.06em] ${
+                          // Wraps on phones, where truncating cut most region names to
+                          // their first two words.
+                          className={`min-w-0 text-[0.78rem] leading-snug font-bold uppercase tracking-[0.06em] sm:truncate ${
                             isOpen ? "text-[#1249e8]" : "text-[#2f5aa8]"
                           }`}
                         >

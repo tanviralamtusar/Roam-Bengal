@@ -194,7 +194,7 @@ function ToursIndex() {
                   <h2 className="mb-6 font-display text-[1.4rem] font-bold text-green-dark">
                     {CATEGORY_LABELS[category]}
                   </h2>
-                  <div className="grid gap-[26px] nav:grid-cols-3">
+                  <div className="grid gap-[26px] md:grid-cols-2 nav:grid-cols-3">
                     {group.map((tour, i) => (
                       <TourCard
                         key={tour.id}

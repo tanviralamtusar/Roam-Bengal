@@ -257,10 +257,19 @@
     font-weight: 700;
   }
 
+  /* Justified only once the measure is wide enough to absorb it: on a phone a ~335px
+     column stretches single spaces into rivers, so narrow screens align to the start. */
   p,
   li {
-    text-align: justify;
-    text-justify: inter-word;
+    text-align: start;
+  }
+
+  @media (min-width: 640px) {
+    p,
+    li {
+      text-align: justify;
+      text-justify: inter-word;
+    }
   }
 
   a {
@@ -329,10 +338,11 @@
 @utility foot-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 40px;
+  gap: 32px 24px;
 
   @media (min-width: 980px) {
     grid-template-columns: 1.4fr repeat(var(--foot-cols, 4), minmax(0, 1fr));
+    gap: 40px;
   }
 }
 

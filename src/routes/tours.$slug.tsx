@@ -135,8 +135,10 @@ function TourDetail() {
             `.pkg-gallery` in the reference design. Per-tile aspect ratios cannot work
             here: the two rows are equal `1fr`, so the wide top-right tile's ratio would
             set both row heights and the row-spanning big tile would end up twice as tall
-            as the column beside it. Ratios still drive the stacked mobile layout. */}
-        <div className="wrap grid gap-3 py-6 lg:-translate-x-[clamp(0px,calc((100vw-1240px)/2+24px),74px)] md:h-[400px] md:grid-cols-4 md:grid-rows-2 lg:h-[560px] lg:grid-cols-[325px_325px_minmax(0,1fr)_minmax(0,1fr)]">
+            as the column beside it. Ratios still drive the mobile layout, where the big
+            photo runs full width over a row of three thumbnails rather than four
+            full-width photos pushing the title a whole screen down. */}
+        <div className="wrap grid grid-cols-3 gap-2 py-6 md:h-[400px] md:grid-cols-4 md:grid-rows-2 md:gap-3 lg:h-[560px] lg:-translate-x-[clamp(0px,calc((100vw-1240px)/2+24px),74px)] lg:grid-cols-[325px_325px_minmax(0,1fr)_minmax(0,1fr)]">
           <PhotoFrame
             src={gallery[0]?.url}
             alt={gallery[0]?.alt || `${tour.title} — main photograph`}
@@ -144,7 +146,7 @@ function TourDetail() {
             gradient={gradientFor(tour.slug)}
             priority
             placeholderLabel={`images/pkg-${tour.slug}-1.jpg`}
-            className="aspect-[16/10] rounded-2xl md:col-span-2 md:row-span-2 md:aspect-auto lg:h-[510px] lg:w-[650px]"
+            className="col-span-3 aspect-[16/10] rounded-2xl md:col-span-2 md:row-span-2 md:aspect-auto lg:h-[510px] lg:w-[650px]"
           />
           {[1, 2, 3].map((i) => (
             <PhotoFrame
@@ -154,7 +156,7 @@ function TourDetail() {
               title={gallery[i]?.title}
               gradient={gradientFor(`${tour.slug}-${i}`)}
               placeholderLabel={`images/pkg-${tour.slug}-${i + 1}.jpg`}
-              className={`aspect-[4/3] rounded-2xl md:aspect-auto ${i === 1 ? "md:col-span-2 lg:h-[250px] lg:w-[630px]" : i === 2 ? "lg:h-[250px] lg:w-[308.69px]" : i === 3 ? "lg:h-[250px] lg:w-[308.69px] lg:translate-x-[78px]" : ""}`}
+              className={`aspect-[4/3] rounded-xl md:aspect-auto md:rounded-2xl ${i === 1 ? "md:col-span-2 lg:h-[250px] lg:w-[630px]" : i === 2 ? "lg:h-[250px] lg:w-[308.69px]" : i === 3 ? "lg:h-[250px] lg:w-[308.69px] lg:translate-x-[78px]" : ""}`}
             />
           ))}
         </div>
@@ -188,17 +190,20 @@ function TourDetail() {
             <div className="mt-6 h-px bg-rule" />
 
             {facts.length ? (
-              <div className="mt-7 grid grid-cols-2 gap-x-6 gap-y-7 sm:grid-cols-3">
+              // Two columns on a phone leave ~110px for the text, which a label like
+              // "Accommodation" only fits at the smaller size; `break-words` is the fallback
+              // for anything longer on the narrowest screens.
+              <div className="mt-7 grid grid-cols-2 gap-x-4 gap-y-6 sm:grid-cols-3 sm:gap-x-6 sm:gap-y-7">
                 {facts.map(([key, value]) => (
-                  <div key={key} className="flex items-center gap-3.5">
-                    <span aria-hidden="true" className="w-10 shrink-0 text-center text-[2.1rem] leading-none">
+                  <div key={key} className="flex items-center gap-2.5 md:gap-3.5">
+                    <span aria-hidden="true" className="w-8 shrink-0 text-center text-[1.7rem] leading-none md:w-10 md:text-[2.1rem]">
                       {TOUR_FACT_META[key].icon}
                     </span>
-                    <div>
-                      <div className="text-[1rem] leading-6 text-muted">
+                    <div className="min-w-0 break-words">
+                      <div className="text-[0.85rem] leading-6 text-muted md:text-[1rem]">
                         {TOUR_FACT_META[key].label}
                       </div>
-                      <div className="text-[1.05rem] leading-6 font-semibold text-ink">{value}</div>
+                      <div className="text-[0.95rem] leading-6 font-semibold text-ink md:text-[1.05rem]">{value}</div>
                     </div>
                   </div>
                 ))}
@@ -511,11 +516,12 @@ function TourDetail() {
 
           {/* The gallery's fixed tile widths run 148px past `.wrap`; widen the sidebar to
               line up with its right edge, keeping a 16px gap to the viewport on narrower screens. */}
-          <aside className="lg:sticky lg:top-6 lg:mr-[calc(-1*clamp(0px,calc((100vw-1240px)/2+24px),148px))] lg:h-fit">
+          <aside className="min-w-0 lg:sticky lg:top-6 lg:mr-[calc(-1*clamp(0px,calc((100vw-1240px)/2+24px),148px))] lg:h-fit">
             <div className="rounded-2xl border border-rule bg-cream p-6 shadow-sm">
               {/* The price shares the label block's last baseline, with lining figures so both
-                  digits sit on it at full cap height. */}
-              <div className="flex items-baseline-last justify-between gap-4">
+                  digits sit on it at full cap height. Wraps so a long "On request" drops
+                  under the label on a phone instead of widening the whole page column. */}
+              <div className="flex flex-wrap items-baseline-last justify-between gap-x-4 gap-y-2">
                 <div>
                   <div className="font-body text-[1.75rem] leading-tight font-bold text-green">
                     Tour Cost
@@ -577,15 +583,21 @@ function TourDetail() {
                 tour={tour}
                 tours={allTours}
                 trigger={(open) => (
-                  <Button
-                    type="button"
-                    variant="ember"
-                    onClick={open}
-                    className="mt-6 w-full cta-pulse-glow hover:scale-[1.05]"
-                  >
-                    Book now
-                    <ArrowRight className="h-4 w-4" />
-                  </Button>
+                  <>
+                    <Button
+                      type="button"
+                      variant="ember"
+                      onClick={open}
+                      className="mt-6 w-full cta-pulse-glow hover:scale-[1.05]"
+                    >
+                      Book now
+                      <ArrowRight className="h-4 w-4" />
+                    </Button>
+                    <MobileBookingBar
+                      price={formatPrice(tour.discountPriceUsd ?? tour.priceUsd)}
+                      onBook={open}
+                    />
+                  </>
                 )}
               />
             </div>
@@ -622,7 +634,7 @@ function TourDetail() {
               <h2 className="mb-8 font-display text-[1.6rem] text-green">
                 You Might Also Like
               </h2>
-              <div className="grid gap-7 sm:grid-cols-2 lg:grid-cols-3">
+              <div className="grid gap-7 md:grid-cols-2 lg:grid-cols-3">
                 {related.map((r) => (
                   <TourCard key={r.id} tour={r} />
                 ))}
@@ -661,8 +673,39 @@ function TourDetail() {
       </div>
 
       <SiteFooter />
-      <WhatsAppFloat />
+      {/* Scroll room so the fixed booking bar never covers the end of the footer. */}
+      <div aria-hidden="true" className="h-[72px] pb-[env(safe-area-inset-bottom)] lg:hidden" />
+      <WhatsAppFloat className="max-lg:bottom-[calc(88px+env(safe-area-inset-bottom))]" />
     </>
+  );
+}
+
+/**
+ * Below `lg` the sidebar price box lands after the entire itinerary, so this bar keeps
+ * booking one tap away. It opens the sidebar's own dialog (it is rendered from that
+ * dialog's trigger) rather than mounting another. `z-40` keeps it under the mobile nav
+ * drawer's `z-50`; the dialog itself opens in the top layer.
+ */
+function MobileBookingBar({ price, onBook }: { price: string; onBook: () => void }) {
+  const priced = price.startsWith("$");
+  return (
+    <div className="fixed inset-x-0 bottom-0 z-40 border-t border-rule bg-paper/95 pb-[env(safe-area-inset-bottom)] shadow-[0_-8px_24px_rgba(0,0,0,0.08)] backdrop-blur lg:hidden">
+      <div className="mx-auto flex h-[72px] max-w-[1240px] items-center justify-between gap-4 px-5 sm:px-10">
+        <div className="min-w-0 leading-tight">
+          <div className="text-[0.75rem] text-muted">{priced ? "From" : "Price"}</div>
+          <div className="truncate font-display text-[1.35rem] font-bold text-green">
+            {price}
+            {priced ? (
+              <span className="ml-1 font-body text-[0.75rem] font-normal text-muted">/ person</span>
+            ) : null}
+          </div>
+        </div>
+        <Button type="button" variant="ember" onClick={onBook} className="shrink-0 px-7">
+          Book now
+          <ArrowRight className="h-4 w-4" />
+        </Button>
+      </div>
+    </div>
   );
 }
 
