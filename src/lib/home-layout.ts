@@ -1,4 +1,4 @@
-import { DEFAULT_HOME_ORDER, isHomeSectionId, type HomeSectionId } from "@/components/home/registry";
+import { DEFAULT_HOME_ORDER, isHomeSectionId, type HomeSectionId } from "@/components/home/section-ids";
 
 export type HomeLayoutEntry = { id: HomeSectionId; visible: boolean };
 export type HomeLayout = HomeLayoutEntry[];

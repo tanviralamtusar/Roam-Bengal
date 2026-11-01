@@ -23,11 +23,16 @@ export function PopularToursSection({ tours }: HomeSectionProps) {
 
           An <img>, not a CSS background: a background image is fetched as soon as the
           style applies, so it competed with the hero photo for bandwidth on first load.
-          This one waits until the band nears the viewport, and phones get the 960w file. */}
+          This one waits until the band nears the viewport.
+
+          Below 980px the band is several screens tall, so the photo is blown up many
+          times over and sits under a 60% black scrim either way: phones get the small
+          file however dense their screen (both files are also encoded at low quality,
+          for the same reason). */}
       <img
         src={toursBg}
         srcSet={`${toursBgSmall} 960w, ${toursBg} 1920w`}
-        sizes="100vw"
+        sizes="(min-width: 980px) 100vw, 240px"
         alt=""
         aria-hidden
         loading="lazy"

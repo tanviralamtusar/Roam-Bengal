@@ -1,4 +1,4 @@
-import { MEDIA_WIDTHS } from "@/lib/media-sizes";
+import { MEDIA_QUALITY, MEDIA_WIDTHS } from "@/lib/media-sizes";
 
 /**
  * Resizing for `/media/<id>?w=<width>`. See lib/media-sizes.ts for why it exists.
@@ -120,7 +120,7 @@ async function encode(width: number, load: () => Promise<StoredMedia | null>): P
       // Re-encoding drops EXIF, so apply its orientation first, as the browser would.
       .rotate()
       .resize({ width, withoutEnlargement: true })
-      .webp({ quality: 78 })
+      .webp({ quality: MEDIA_QUALITY })
       .toBuffer();
     // An already well-compressed upload narrower than `width` can come out larger.
     return output.byteLength < stored.bytes.byteLength

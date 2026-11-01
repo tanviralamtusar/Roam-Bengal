@@ -177,6 +177,19 @@ export const listTourThemes = createServerFn({ method: "GET" }).handler(
   },
 );
 
+/** The standalone `/policies/*` and info pages' rows: each holds a whole page of copy that
+ *  only its own page renders, so those pages load it themselves (`getPageSetting`). */
+const PAGE_SETTING_KEY = /^(policy|info)_[a-z0-9_-]+$/;
+
+function isSettingsObject(value: unknown): value is JsonValue {
+  return Boolean(value) && typeof value === "object" && !Array.isArray(value);
+}
+
+/**
+ * Every `site_settings` row except the per-page ones (see PAGE_SETTING_KEY). This is the
+ * root loader, so its result is serialised into every page's HTML; carrying all the
+ * policy and info pages' copy made each page ~33 kB heavier for text it never shows.
+ */
 export const getAllSettings = createServerFn({ method: "GET" }).handler(
   async (): Promise<SettingsMap> => {
     const { data, error } = await serverClient()
@@ -188,10 +201,26 @@ export const getAllSettings = createServerFn({ method: "GET" }).handler(
     }
     const map: SettingsMap = {};
     for (const row of data ?? []) {
-      if (row.value && typeof row.value === "object" && !Array.isArray(row.value)) {
-        map[row.key] = row.value as JsonValue;
-      }
+      if (PAGE_SETTING_KEY.test(row.key)) continue;
+      if (isSettingsObject(row.value)) map[row.key] = row.value;
     }
     return map;
   },
 );
+
+/** One `policy_*` / `info_*` row, for the page that renders it. Null when never saved. */
+export const getPageSetting = createServerFn({ method: "GET" })
+  .validator(z.object({ key: z.string().regex(PAGE_SETTING_KEY) }))
+  .handler(async ({ data: { key } }): Promise<JsonValue | null> => {
+    const { data, error } = await serverClient()
+      .from("site_settings")
+      .select("value")
+      .eq("key", key)
+      .maybeSingle();
+    if (error) {
+      console.error("[site-content] getPageSetting:", error.message);
+      return null;
+    }
+    const value = (data as { value?: unknown } | null)?.value;
+    return isSettingsObject(value) ? value : null;
+  });

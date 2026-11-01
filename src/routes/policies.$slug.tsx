@@ -1,29 +1,29 @@
 import { createFileRoute, notFound } from "@tanstack/react-router";
 import { PolicyLayout } from "@/components/policy-layout";
-import {
-  POLICY_SLUGS,
-  policyDefaults,
-  type PolicySlug,
-} from "@/content/policy-defaults";
+import { policyDefaults, type PolicySlug } from "@/content/policy-defaults";
 import { useSettingGroup, useSiteSettings } from "@/hooks/use-site-settings";
 import { toPlainText } from "@/lib/markdown";
-import { listPublishedTestimonials } from "@/lib/site-content.functions";
+import { getPageSetting, listPublishedTestimonials } from "@/lib/site-content.functions";
 
 export const Route = createFileRoute("/policies/$slug")({
   loader: async ({ params }) => {
-    if (!POLICY_SLUGS.includes(params.slug as PolicySlug)) throw notFound();
-    return {
-      slug: params.slug as PolicySlug,
-      testimonials: await listPublishedTestimonials(),
-    };
+    // Imported here, not at the top: see the same note in $infoSlug.tsx.
+    const { POLICY_SLUGS, policyDefaults } = await import("@/content/policy-defaults");
+    const slug = params.slug as PolicySlug;
+    if (!POLICY_SLUGS.includes(slug)) throw notFound();
+    const [testimonials, stored] = await Promise.all([
+      listPublishedTestimonials(),
+      getPageSetting({ data: { key: `policy_${slug}` } }),
+    ]);
+    const { title, subhead } = policyDefaults[slug];
+    return { slug, testimonials, stored, title, subhead };
   },
   head: ({ loaderData }) => {
-    const page = loaderData ? policyDefaults[loaderData.slug] : undefined;
-    if (!page) return {};
+    if (!loaderData) return {};
     return {
       meta: [
-        { title: `${page.title} — Roam Bengal` },
-        { name: "description", content: toPlainText(page.subhead) },
+        { title: `${loaderData.title} — Roam Bengal` },
+        { name: "description", content: toPlainText(loaderData.subhead) },
       ],
     };
   },
@@ -31,7 +31,7 @@ export const Route = createFileRoute("/policies/$slug")({
 });
 
 function PolicyRoute() {
-  const { slug, testimonials } = Route.useLoaderData();
+  const { slug, testimonials, stored } = Route.useLoaderData();
   // Touch the settings hook so the header/footer share one source of truth.
   useSiteSettings();
 
@@ -39,7 +39,7 @@ function PolicyRoute() {
   // admin panel can never blank out a section it did not touch. Going through
   // `useSettingGroup` also applies the admin editor's unsaved draft, which is what makes
   // the live preview update as you type.
-  const page = useSettingGroup(`policy_${slug}`, policyDefaults[slug]);
+  const page = useSettingGroup(`policy_${slug}`, policyDefaults[slug], stored);
 
   return <PolicyLayout page={page} testimonials={testimonials} />;
 }

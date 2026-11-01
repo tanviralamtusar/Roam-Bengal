@@ -11,6 +11,14 @@ import { JournalSection } from "./journal-section";
 import { ReviewsSection } from "./reviews-section";
 import { WhyChooseUsSection } from "./why-choose-us-section";
 import { DreamCtaSection } from "./dream-cta-section";
+import type { HomeSectionId } from "./section-ids";
+
+export {
+  DEFAULT_HOME_ORDER,
+  HOME_SECTION_IDS,
+  isHomeSectionId,
+  type HomeSectionId,
+} from "./section-ids";
 
 export interface HomeSectionProps {
   tours: TourSummaryDTO[];
@@ -22,25 +30,9 @@ export interface HomeSectionProps {
  * Every homepage section below the (always-first, non-reorderable) hero.
  *
  * Registered once here so the admin builder (`homepage-sections` route) and the public
- * homepage (`routes/index.tsx`) can't drift: adding a section means adding it to this map,
- * nowhere else.
+ * homepage (`routes/index.tsx`) can't drift: adding a section means adding its id to
+ * `section-ids.ts` and its entry to this map, nowhere else.
  */
-export const HOME_SECTION_IDS = [
-  "features",
-  "tripBuilder",
-  "popularTours",
-  "gallery",
-  "faith",
-  "multiDayTours",
-  "journal",
-  "holidayTours",
-  "reviews",
-  "whyChooseUs",
-  "dreamCta",
-] as const;
-
-export type HomeSectionId = (typeof HOME_SECTION_IDS)[number];
-
 export interface HomeSectionMeta {
   label: string;
   blurb: string;
@@ -105,8 +97,6 @@ export const HOME_SECTIONS: Record<HomeSectionId, HomeSectionMeta> = {
   },
 };
 
-export const DEFAULT_HOME_ORDER: HomeSectionId[] = [...HOME_SECTION_IDS];
-
 /**
  * Which `site_settings` key's editor a section's wording/photos live under — for the
  * homepage-sections builder's per-row "Edit" link. Most sections share the `homepage` key;
@@ -125,7 +115,3 @@ export const HOME_SECTION_SETTINGS_KEY: Record<HomeSectionId, string> = {
   whyChooseUs: "homepage",
   dreamCta: "homepage",
 };
-
-export function isHomeSectionId(value: unknown): value is HomeSectionId {
-  return typeof value === "string" && (HOME_SECTION_IDS as readonly string[]).includes(value);
-}

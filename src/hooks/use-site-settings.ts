@@ -21,9 +21,8 @@ type SettingsDraftMap = Record<string, unknown>;
  * is live. Wiring the channel in here, once, covers every page that reads its copy through
  * `useSiteSettings()` instead of threading `?preview=1` through six different routes.
  *
- * It does NOT reach a page that pulls a single keyed row off the root loader itself — the
- * standalone `info_*` / `policy_*` pages do exactly that. Those call `useSettingGroup()`
- * below, which applies the same draft.
+ * It does NOT reach the standalone `info_*` / `policy_*` pages, whose rows are not in the
+ * root loader at all. Those call `useSettingGroup()` below, which applies the same draft.
  */
 export const settingsPreviewChannel = createDraftChannel<SettingsDraftMap>("settings");
 
@@ -65,14 +64,14 @@ export function useSiteSettings(): SiteDefaults {
  * One `site_settings` row, merged over its defaults, with the unsaved admin draft applied.
  *
  * The standalone `info_*` / `policy_*` pages do not get their body copy through
- * `useSiteSettings()` — they read a single keyed row straight off the root loader — so the
- * draft channel wired into `useSiteSettings` never reached them and their editor preview
- * rendered only saved content. Use this instead of reaching for the loader data directly.
+ * `useSiteSettings()`: the root loader leaves their rows out (each is a whole page of copy
+ * that would otherwise ride along in every page's HTML), so each page loads its own row
+ * with `getPageSetting` and passes it in as `stored`. Going through here rather than using
+ * that row directly is what applies the admin editor's unsaved draft to the preview.
  */
-export function useSettingGroup<T>(key: string, defaults: T): T {
-  const stored = rootRoute.useLoaderData() as SettingsMap | undefined;
+export function useSettingGroup<T>(key: string, defaults: T, stored: unknown): T {
   const draft = settingsPreviewChannel.useDraft(true);
-  const value = draft && key in draft ? draft[key] : stored?.[key];
+  const value = draft && key in draft ? draft[key] : stored;
   return mergeSettings(defaults, value ?? {});
 }
 

@@ -42,8 +42,9 @@ export function TourCard({
         alt={tour.heroImage ? tour.heroImageAlt || tour.title : tour.images[0]?.alt || tour.title}
         gradientCss={gradientCss ?? FRAME_GRADIENTS[gradientFor(tour.slug)]}
         placeholderLabel={`images/tour-${tour.slug}.jpg`}
-        // One column on phones, two from 768px, three (~400px each) from the 980px breakpoint.
-        sizes="(min-width: 980px) 400px, (min-width: 768px) 50vw, 100vw"
+        // One column on phones (inside 21px gutters), two from 768px, three (~400px each)
+        // from the 980px breakpoint.
+        sizes="(min-width: 980px) 400px, (min-width: 768px) 50vw, calc(100vw - 42px)"
         className="aspect-16/10 w-full"
       >
         <div className="absolute top-4 left-4 z-3 flex flex-col items-start gap-2">

@@ -48,9 +48,14 @@ export function PolicyLayout({
       </div>
 
       <main id="main" className="wrap py-14">
-        <p className="font-display text-[1.2rem] leading-8 text-green-dark">
+        {/* A <div>, not a <p>: saved subheads can hold their own headings and paragraphs,
+            which a <p> may not contain. The browser closes the <p> early, the page no longer
+            matches what React rendered, and React throws the server HTML away and rebuilds
+            the whole page in the browser. The `sm:` classes keep the justified alignment
+            the base `p` style gives text from 640px up. */}
+        <div className="font-display text-[1.2rem] leading-8 text-green-dark sm:text-justify sm:[text-justify:inter-word]">
           <FormatText>{page.subhead}</FormatText>
-        </p>
+        </div>
 
         {/* `body` is what the admin editor writes now; `blocks` is the shape these pages shipped
             in and is still what the code defaults carry, so both have to render. */}
@@ -112,9 +117,10 @@ export function PolicyLayout({
 
         <div className="mt-12 rounded-2xl bg-mint p-7 text-center">
           <h3 className="font-display text-[1.2rem] text-green">{page.contact_heading}</h3>
-          <p className="mx-auto mt-2 max-w-md text-center text-[0.9rem] leading-7 text-muted">
+          {/* A <div> for the same reason as the subhead above. */}
+          <div className="mx-auto mt-2 max-w-md text-center text-[0.9rem] leading-7 text-muted">
             <FormatText>{page.contact_body}</FormatText>
-          </p>
+          </div>
           <div className="mt-5">
             <ButtonLink to="/contact" variant="green-dark">
               Contact Us →
