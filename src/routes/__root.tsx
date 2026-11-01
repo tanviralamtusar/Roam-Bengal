@@ -77,6 +77,9 @@ const appCss = import.meta.env.SSR
   ? appCssText
   : (document.getElementById(APP_CSS_ID)?.textContent ?? "");
 
+/** Applies each non-blocking (`media="print"`) stylesheet once it has loaded. */
+const ASYNC_CSS_SCRIPT = `document.querySelectorAll("link[data-async-css]").forEach(function(l){function on(){l.media="all"}if(l.sheet)on();else l.addEventListener("load",on)})`;
+
 function RootDocument({ children }: { children: ReactNode }) {
   const { custom_fonts, integrations } = useSiteSettings();
   const fonts = resolveCustomFonts(custom_fonts);
@@ -92,8 +95,8 @@ function RootDocument({ children }: { children: ReactNode }) {
         {/* Keep the shell styled even if a stale CDN/HTML response references an old
             content-hashed stylesheet that is no longer present after a deploy. */}
         <style id={APP_CSS_ID} dangerouslySetInnerHTML={{ __html: appCss }} />
-        {/* The font stylesheets are render-blocking and live on two other origins; open
-            both connections up front rather than one after the other. */}
+        {/* The font stylesheets live on two other origins; open both connections up front
+            rather than one after the other. */}
         {usesGoogleFonts ? (
           <>
             <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -101,10 +104,38 @@ function RootDocument({ children }: { children: ReactNode }) {
           </>
         ) : null}
         {/* Admin → Site content → Custom Fonts. One `<style>` for the whole list: it is
-            unlayered, so it beats Tailwind's layered utilities whatever order they load in. */}
+            unlayered, so it beats Tailwind's layered utilities whatever order they load in.
+
+            The stylesheets must not hold up the first paint: they only refine text that
+            already has a fallback (`display=swap`, and the bundled @fontsource faces). A
+            `media="print"` stylesheet downloads without blocking rendering; it is switched to
+            `all` once it arrives — by the inline script for links in the server HTML, which
+            can finish loading before React hydrates, and by `onLoad` for any link React
+            adds later (an admin font preview). The script changes `media` before hydration,
+            hence `suppressHydrationWarning`. */}
         {fontUrls.map((href) => (
-          <link key={href} rel="stylesheet" href={href} />
+          <link
+            key={href}
+            rel="stylesheet"
+            href={href}
+            media="print"
+            data-async-css=""
+            onLoad={(event) => {
+              event.currentTarget.media = "all";
+            }}
+            suppressHydrationWarning
+          />
         ))}
+        {fontUrls.length ? (
+          <>
+            <script dangerouslySetInnerHTML={{ __html: ASYNC_CSS_SCRIPT }} />
+            <noscript>
+              {fontUrls.map((href) => (
+                <link key={href} rel="stylesheet" href={href} />
+              ))}
+            </noscript>
+          </>
+        ) : null}
         {fonts.length ? <style dangerouslySetInnerHTML={{ __html: customFontCss(fonts) }} /> : null}
         {gtmId ? (
           // GA4 and Google Ads are configured as tags inside the GTM container itself —
