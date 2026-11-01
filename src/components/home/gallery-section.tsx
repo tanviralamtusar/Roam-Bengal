@@ -17,7 +17,8 @@ export function GallerySection(_props: HomeSectionProps) {
       ].slice(0, gallery.photos.length || 1)
     : gallery.photos;
   return (
-    <section id="section-gallery" className="pt-[90px] pb-[90px]">
+    // No bottom padding on mobile: the next section's top padding is gap enough.
+    <section id="section-gallery" className="pt-[90px] nav:pb-[90px]">
       <div className="wrap mb-9 flex flex-wrap items-end justify-between gap-[30px]">
         <div>
           <h2 className="mb-3.5 font-kalam text-[clamp(1.9rem,3.4vw,2.6rem)] leading-[1.3] font-bold">

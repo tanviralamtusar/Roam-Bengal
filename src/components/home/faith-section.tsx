@@ -30,7 +30,9 @@ export function FaithSection(_props: HomeSectionProps) {
   const photo1 = imageMeta(homepage, "faith_image_1");
   const photo2 = imageMeta(homepage, "faith_image_2");
   return (
-    <section className="pt-[100px] pb-[90px]">
+    // On mobile the bottom padding only covers the orange block's 16px overhang; the next
+    // section's top padding supplies the gap.
+    <section className="pt-[100px] pb-4 nav:pb-[90px]">
       <div className="wrap grid grid-cols-1 items-start gap-10 nav:grid-cols-2 nav:gap-x-[60px] nav:gap-y-14">
         <div className="relative nav:col-start-1 nav:row-start-1">
           <div className="absolute -top-4 -left-4 h-full w-full rounded-[20px] bg-green" />
