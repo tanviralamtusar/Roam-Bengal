@@ -233,14 +233,16 @@ export function TripBuilderSection(_props: HomeSectionProps) {
           <p className="text-center text-[0.92rem] text-white">
             <FormatText>{homepage.trip_builder_intro}</FormatText>
           </p>
-          <div className="mt-5 flex flex-wrap justify-center gap-2.5 min-[980px]:flex-nowrap">
+          {/* A 2×2 grid on phones, where the pills otherwise stack one per row. The cells
+              are taller than a pill there (labels wrap), so they round less. */}
+          <div className="mt-5 grid grid-cols-2 gap-2.5 sm:flex sm:flex-wrap sm:justify-center min-[980px]:flex-nowrap">
             {presets.map((preset) => (
               <button
                 key={preset.id}
                 type="button"
                 onClick={() => applyPreset(preset.id)}
                 aria-pressed={activePreset === preset.id}
-                className={`rounded-full border-[1.5px] px-5 py-2.5 text-left transition-colors ${
+                className={`rounded-2xl border-[1.5px] px-3 py-2.5 text-center transition-colors sm:rounded-full sm:px-5 sm:text-left ${
                   activePreset === preset.id
                     ? "border-[#111827] bg-[#1249e8] text-white"
                     : "border-rule bg-paper text-ink hover:border-green"
