@@ -8,7 +8,7 @@ import {
   X,
 } from "lucide-react";
 import { submitInquiry } from "@/lib/capture.functions";
-import type { TourDTO } from "@/lib/content-types";
+import type { TourDTO, TourSummaryDTO } from "@/lib/content-types";
 import { DIAL_CODES, guessCountry } from "@/lib/dial-codes";
 
 /**
@@ -27,7 +27,7 @@ export function BookingDialog({
   trigger,
 }: {
   tour: TourDTO;
-  tours: TourDTO[];
+  tours: TourSummaryDTO[];
   /** Renders the button that opens the dialog. */
   trigger: (open: () => void) => ReactNode;
 }) {

@@ -1,6 +1,5 @@
 import { useMemo, useState } from "react";
 import { createFileRoute, useBlocker, useNavigate } from "@tanstack/react-router";
-import { z } from "zod";
 import {
   AdminButton,
   AdminModal,
@@ -27,12 +26,18 @@ import {
   type SeoTarget,
 } from "@/lib/seo.functions";
 import { analyzeKeyphrase, analyzeReadability, overallScore } from "@/lib/seo-analysis";
+import { searchEnum, searchString } from "@/lib/search-params";
+
+const SEO_TABS = ["pages", "redirects", "orphans", "robots", "sitemap"] as const;
+const SEO_TYPES = ["all", "tour", "destination", "blog", "activity", "page"] as const;
 
 export const Route = createFileRoute("/_authenticated/admin/seo")({
-  validateSearch: z.object({
-    tab: z.enum(["pages", "redirects", "orphans", "robots", "sitemap"]).optional().catch("pages"),
-    q: z.string().optional().catch(""),
-    type: z.enum(["all", "tour", "destination", "blog", "activity", "page"]).optional().catch("all"),
+  validateSearch: (
+    search,
+  ): { tab?: (typeof SEO_TABS)[number]; q?: string; type?: (typeof SEO_TYPES)[number] } => ({
+    tab: searchEnum(search.tab, SEO_TABS),
+    q: searchString(search.q),
+    type: searchEnum(search.type, SEO_TYPES),
   }),
   loader: async () => {
     const [targets, redirects, orphans, settings] = await Promise.all([

@@ -2,7 +2,8 @@ import { useSiteSettings } from "@/hooks/use-site-settings";
 import { TourCard } from "@/components/tour-card";
 import { SectionHead } from "@/components/sections";
 import { ButtonLink } from "@/components/ui/button";
-import toursBg from "@/assets/a.jpg.jpeg";
+import toursBg from "@/assets/popular-tours-bg-1920.webp";
+import toursBgSmall from "@/assets/popular-tours-bg-960.webp";
 import { SECTION_SEAM, TOUR_FRAMES } from "./palette";
 import type { HomeSectionProps } from "./registry";
 
@@ -16,13 +17,22 @@ export function PopularToursSection({ tours }: HomeSectionProps) {
 
   return (
     <section id="packages" className="shell relative overflow-hidden pt-20 pb-[60px] text-center">
-      <div
+      {/* Keep the homepage background fixed to the photo used in the design.
+          The CMS field is intentionally not used here so it cannot rotate or
+          replace this image after the page has loaded.
+
+          An <img>, not a CSS background: a background image is fetched as soon as the
+          style applies, so it competed with the hero photo for bandwidth on first load.
+          This one waits until the band nears the viewport, and phones get the 960w file. */}
+      <img
+        src={toursBg}
+        srcSet={`${toursBgSmall} 960w, ${toursBg} 1920w`}
+        sizes="100vw"
+        alt=""
         aria-hidden
-        className="absolute inset-0 bg-cover bg-center"
-        // Keep the homepage background fixed to the photo used in the design.
-        // The CMS field is intentionally not used here so it cannot rotate or
-        // replace this image after the page has loaded.
-        style={{ backgroundImage: `url(${toursBg})`, opacity: 1 }}
+        loading="lazy"
+        decoding="async"
+        className="absolute inset-0 h-full w-full object-cover object-center"
       />
       <div aria-hidden className="absolute inset-0 bg-black/60" />
 

@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
-import { z } from "zod";
 import { SiteHeader } from "@/components/site-header";
 import { BannerPhoto, hasBannerPhoto } from "@/components/ui/banner-photo";
 import { SiteFooter } from "@/components/site-footer";
@@ -13,10 +12,11 @@ import { useSiteSettings } from "@/hooks/use-site-settings";
 import { imageMeta } from "@/lib/image-meta";
 import { listPublishedTours } from "@/lib/site-content.functions";
 import { submitInquiry } from "@/lib/capture.functions";
+import { searchString } from "@/lib/search-params";
 
 export const Route = createFileRoute("/contact")({
   // `?tour=<slug>` pre-selects the tour — this is what "Book Now" on a tour page links to.
-  validateSearch: z.object({ tour: z.string().optional() }),
+  validateSearch: (search): { tour?: string } => ({ tour: searchString(search.tour) }),
   loader: () => listPublishedTours(),
   head: () => ({
     meta: [

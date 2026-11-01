@@ -83,7 +83,22 @@ export function resolveCustomFonts(settings: CustomFontSettings | undefined): Cu
 /** Stylesheet URLs to load, de-duplicated — one Google Fonts request often carries several
  *  families, so two rows can legitimately share a URL. */
 export function customFontUrls(fonts: readonly CustomFont[]): string[] {
-  return [...new Set(fonts.map((font) => font.url).filter(Boolean))];
+  return [...new Set(fonts.map((font) => font.url).filter(isStylesheetUrl))];
+}
+
+/**
+ * A link copied from the Google Fonts *browsing* site (`fonts.google.com/specimen/…`) is
+ * an HTML page, not CSS. Linked as a stylesheet it loads no font at all, yet it still
+ * blocks the first paint of every page while the browser downloads that page. Only the
+ * `fonts.googleapis.com/css2?…` embed URL is a stylesheet.
+ */
+function isStylesheetUrl(href: string): boolean {
+  if (!href) return false;
+  try {
+    return new URL(href, "https://placeholder.invalid").hostname !== "fonts.google.com";
+  } catch {
+    return false;
+  }
 }
 
 export function customFontCss(fonts: readonly CustomFont[]): string {

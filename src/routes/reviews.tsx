@@ -1,5 +1,4 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { z } from "zod";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { WhatsAppFloat } from "@/components/whatsapp-float";
@@ -10,9 +9,10 @@ import { FormatText } from "@/components/ui/format-text";
 import { useSiteSettings } from "@/hooks/use-site-settings";
 import { listPublishedTestimonials } from "@/lib/site-content.functions";
 import { testimonialPreviewChannel } from "@/lib/testimonial-preview";
+import { searchString } from "@/lib/search-params";
 
 export const Route = createFileRoute("/reviews")({
-  validateSearch: z.object({ tour: z.string().optional() }),
+  validateSearch: (search): { tour?: string } => ({ tour: searchString(search.tour) }),
   loader: () => listPublishedTestimonials(),
   head: () => ({
     meta: [

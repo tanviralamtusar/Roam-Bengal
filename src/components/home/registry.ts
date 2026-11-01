@@ -1,5 +1,5 @@
 import type { ComponentType } from "react";
-import type { TourDTO, BlogPostDTO, TestimonialDTO } from "@/lib/content-types";
+import type { TourSummaryDTO, BlogPostSummaryDTO, TestimonialDTO } from "@/lib/content-types";
 import { FeaturesSection } from "./features-section";
 import { TripBuilderSection } from "./trip-builder-section";
 import { PopularToursSection } from "./popular-tours-section";
@@ -13,9 +13,9 @@ import { WhyChooseUsSection } from "./why-choose-us-section";
 import { DreamCtaSection } from "./dream-cta-section";
 
 export interface HomeSectionProps {
-  tours: TourDTO[];
+  tours: TourSummaryDTO[];
   testimonials: TestimonialDTO[];
-  posts: BlogPostDTO[];
+  posts: BlogPostSummaryDTO[];
 }
 
 /**

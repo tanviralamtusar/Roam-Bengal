@@ -25,9 +25,10 @@ import {
   TOUR_FACT_META,
   overviewParagraphs,
   plainText,
-  type BlogPostDTO,
+  type BlogPostSummaryDTO,
   type TourDTO,
   type TourFactKey,
+  type TourSummaryDTO,
 } from "@/lib/content-types";
 
 export const Route = createFileRoute("/tours/$slug")({
@@ -848,12 +849,12 @@ function derivedFact(tour: TourDTO, key: TourFactKey): string | undefined {
 }
 
 /** Explicit `related_slugs` win; otherwise fall back to other tours, nearest first. */
-function resolveRelated(tour: TourDTO, all: TourDTO[]): TourDTO[] {
+function resolveRelated(tour: TourDTO, all: TourSummaryDTO[]): TourSummaryDTO[] {
   const others = all.filter((t) => t.slug !== tour.slug);
   if (tour.relatedSlugs.length) {
     const picked = tour.relatedSlugs
       .map((slug) => others.find((t) => t.slug === slug))
-      .filter((t): t is TourDTO => Boolean(t));
+      .filter((t): t is TourSummaryDTO => Boolean(t));
     if (picked.length) return picked.slice(0, 3);
   }
   return others.slice(0, 3);
@@ -861,11 +862,14 @@ function resolveRelated(tour: TourDTO, all: TourDTO[]): TourDTO[] {
 
 /** Curated `relatedPostSlugs` win; otherwise fall back to `listPublishedPosts`' own order.
  *  Mirrors `resolveRelated` above. */
-function resolveRelatedPosts(tour: TourDTO, allPosts: BlogPostDTO[]): BlogPostDTO[] {
+function resolveRelatedPosts(
+  tour: TourDTO,
+  allPosts: BlogPostSummaryDTO[],
+): BlogPostSummaryDTO[] {
   if (tour.relatedPostSlugs.length) {
     const picked = tour.relatedPostSlugs
       .map((slug) => allPosts.find((p) => p.slug === slug))
-      .filter((p): p is BlogPostDTO => Boolean(p));
+      .filter((p): p is BlogPostSummaryDTO => Boolean(p));
     if (picked.length) return picked.slice(0, 3);
   }
   return allPosts.slice(0, 3);

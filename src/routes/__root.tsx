@@ -7,7 +7,7 @@ import {
 } from "@tanstack/react-router";
 import type { ReactNode } from "react";
 import appCssText from "@/styles/app.css?inline";
-import faviconUrl from "@/assets/favicon.png";
+import faviconUrl from "@/assets/favicon-192.png";
 import { NotFound } from "@/components/not-found";
 import { ErrorPage } from "@/components/error-page";
 import { getAllSettings } from "@/lib/site-content.functions";
@@ -64,9 +64,24 @@ function RootComponent() {
   );
 }
 
+const APP_CSS_ID = "app-css";
+
+/**
+ * The stylesheet text is only needed to server-render the inline `<style>` below. By the
+ * time the client runs, that `<style>` is already in the document, so the browser reads it
+ * back from there instead of downloading a second ~100 kB copy inside the JS bundle.
+ * `import.meta.env.SSR` is a build-time constant, so the client build drops the
+ * `?inline` import entirely.
+ */
+const appCss = import.meta.env.SSR
+  ? appCssText
+  : (document.getElementById(APP_CSS_ID)?.textContent ?? "");
+
 function RootDocument({ children }: { children: ReactNode }) {
   const { custom_fonts, integrations } = useSiteSettings();
   const fonts = resolveCustomFonts(custom_fonts);
+  const fontUrls = customFontUrls(fonts);
+  const usesGoogleFonts = fontUrls.some((href) => href.startsWith("https://fonts.googleapis.com/"));
   const gtmId = integrations.gtm_container_id;
   const adsenseClientId = integrations.adsense_client_id;
 
@@ -76,10 +91,18 @@ function RootDocument({ children }: { children: ReactNode }) {
         <HeadContent />
         {/* Keep the shell styled even if a stale CDN/HTML response references an old
             content-hashed stylesheet that is no longer present after a deploy. */}
-        <style dangerouslySetInnerHTML={{ __html: appCssText }} />
+        <style id={APP_CSS_ID} dangerouslySetInnerHTML={{ __html: appCss }} />
+        {/* The font stylesheets are render-blocking and live on two other origins; open
+            both connections up front rather than one after the other. */}
+        {usesGoogleFonts ? (
+          <>
+            <link rel="preconnect" href="https://fonts.googleapis.com" />
+            <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+          </>
+        ) : null}
         {/* Admin → Site content → Custom Fonts. One `<style>` for the whole list: it is
             unlayered, so it beats Tailwind's layered utilities whatever order they load in. */}
-        {customFontUrls(fonts).map((href) => (
+        {fontUrls.map((href) => (
           <link key={href} rel="stylesheet" href={href} />
         ))}
         {fonts.length ? <style dangerouslySetInnerHTML={{ __html: customFontCss(fonts) }} /> : null}

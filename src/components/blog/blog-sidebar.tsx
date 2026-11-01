@@ -1,14 +1,14 @@
 import { Link } from "@tanstack/react-router";
 import { PhotoFrame, gradientFor } from "@/components/ui/photo-frame";
 import { BestValueTours } from "@/components/tour/best-value-tours";
-import type { BlogPostDTO, TourDTO } from "@/lib/content-types";
+import type { BlogPostSummaryDTO, TourSummaryDTO } from "@/lib/content-types";
 
 export function BlogSidebar({
   relatedBlogs,
   tours,
 }: {
-  relatedBlogs: BlogPostDTO[];
-  tours: TourDTO[];
+  relatedBlogs: BlogPostSummaryDTO[];
+  tours: TourSummaryDTO[];
 }) {
   return (
     <aside className="flex flex-col gap-10">

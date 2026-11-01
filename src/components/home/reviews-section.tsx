@@ -11,7 +11,7 @@ import { imageMeta } from "@/lib/image-meta";
 import { FormatText } from "@/components/ui/format-text";
 import birdsImg from "@/assets/bird.webp";
 import routeImg from "@/assets/map.webp";
-import pinTrailImg from "@/assets/loc.png";
+import pinTrailImg from "@/assets/loc.webp";
 import type { TestimonialDTO } from "@/lib/content-types";
 import {
   PLATFORM_BRANDS,

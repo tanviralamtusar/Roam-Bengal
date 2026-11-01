@@ -8,9 +8,9 @@ import { Mail, MapPin, Phone, type LucideIcon } from "lucide-react";
 import type { IconType } from "react-icons";
 import { FaLinkedinIn } from "react-icons/fa";
 import { SiFacebook, SiInstagram, SiTiktok, SiX } from "react-icons/si";
-import bangladeshTourismImg from "@/assets/bangladesh.png";
-import tripadvisorImg from "@/assets/trip23.png";
-import paymentMethodsImg from "@/assets/payment-methods.png";
+import bangladeshTourismImg from "@/assets/bangladesh.webp";
+import tripadvisorImg from "@/assets/trip23.webp";
+import paymentMethodsImg from "@/assets/payment-methods.webp";
 
 // Shown under the office address in the contact column.
 const paymentBadge = { src: paymentMethodsImg, alt: "Secure payment: Visa, Mastercard, American Express, bKash" };
@@ -73,10 +73,15 @@ export function SiteFooter() {
         style={{ "--foot-cols": footer.columns.length } as CSSProperties}
       >
         <div className="col-span-2 nav:col-span-1">
+          {/* Every footer image is lazy. React's SSR adds a `<link rel="preload">` to the
+              <head> for any <img> that isn't, which made these download alongside the hero
+              photo and pushed out the homepage's Largest Contentful Paint. */}
           <img
             src={footer.logo_url || "/logo-white.png"}
             alt={logoMeta.alt || header.logo_alt}
             title={logoMeta.title || undefined}
+            loading="lazy"
+            decoding="async"
             className="-mt-4 h-[80px] w-[205px] max-w-full object-contain object-left-top"
           />
           {/* Left-aligned against the base `p { text-align: justify }`: this column is only
@@ -180,6 +185,8 @@ export function SiteFooter() {
                   key={badge.alt}
                   src={badge.src}
                   alt={badge.alt}
+                  loading="lazy"
+                  decoding="async"
                   className={`mt-1 mb-2.5 w-[160px] max-w-full ${"className" in badge ? badge.className : ""}`}
                 />,
               ];

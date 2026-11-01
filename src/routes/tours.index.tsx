@@ -1,5 +1,4 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { z } from "zod";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { WhatsAppFloat } from "@/components/whatsapp-float";
@@ -18,14 +17,13 @@ import {
 } from "@/lib/site-content.functions";
 import { activityPreviewChannel } from "@/lib/activity-preview";
 import type { TourCategory } from "@/lib/content-types";
-
-const searchSchema = z.object({
-  theme: z.string().optional(),
-  category: z.enum(["day-tour", "multi-day", "holiday"]).optional(),
-});
+import { searchEnum, searchString } from "@/lib/search-params";
 
 export const Route = createFileRoute("/tours/")({
-  validateSearch: searchSchema,
+  validateSearch: (search): { theme?: string; category?: TourCategory } => ({
+    theme: searchString(search.theme),
+    category: searchEnum(search.category, ["day-tour", "multi-day", "holiday"]),
+  }),
   loader: async () => {
     const [tours, activities, themes] = await Promise.all([
       listPublishedTours(),

@@ -1,4 +1,4 @@
-import type { BlogPostDTO } from "@/lib/content-types";
+import type { BlogPostDTO, BlogPostSummaryDTO } from "@/lib/content-types";
 
 /**
  * Row → DTO for a `blog_posts` record.
@@ -32,6 +32,12 @@ export function toPostDTO(row: PostRowLike): BlogPostDTO {
     isFeatured: Boolean(row.is_featured),
     relatedSlugs: strArr(row.related_slugs),
   };
+}
+
+/** Drops the article body for list endpoints; see `BlogPostSummaryDTO`. */
+export function toPostSummary(post: BlogPostDTO): BlogPostSummaryDTO {
+  const { body: _body, ...summary } = post;
+  return summary;
 }
 
 function str(value: unknown): string {

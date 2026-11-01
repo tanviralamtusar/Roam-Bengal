@@ -13,14 +13,14 @@ import { FaStar, FaHeart } from "react-icons/fa";
 import { DollarSign } from "lucide-react";
 import { PhotoFrame, FRAME_GRADIENTS, gradientFor } from "@/components/ui/photo-frame";
 import { FormatTourCardDescription } from "@/components/ui/format-text";
-import type { TourDTO } from "@/lib/content-types";
+import type { TourSummaryDTO } from "@/lib/content-types";
 
 /** Shared by the homepage, /tours, and the tour page's related rail. */
 export function TourCard({
   tour,
   gradientCss,
 }: {
-  tour: TourDTO;
+  tour: TourSummaryDTO;
   /** Overrides the slug-hashed frame colour, so a grid can follow a fixed sequence. */
   gradientCss?: string;
 }) {

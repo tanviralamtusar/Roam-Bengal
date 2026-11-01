@@ -15,7 +15,7 @@ import { FormatDocument } from "@/components/ui/format-text";
 import { useSiteSettings } from "@/hooks/use-site-settings";
 import { postPreviewChannel } from "@/lib/post-preview";
 import { toPostDTO } from "@/lib/post-dto";
-import type { BlogPostDTO } from "@/lib/content-types";
+import type { BlogPostDTO, BlogPostSummaryDTO } from "@/lib/content-types";
 
 /**
  * No reference design exists for the post detail page — blog.html links to a
@@ -30,12 +30,12 @@ function blankPost(slug: string): BlogPostDTO {
   return toPostDTO({ slug, title: "Untitled post" });
 }
 
-function resolveRelated(post: BlogPostDTO, all: BlogPostDTO[]): BlogPostDTO[] {
+function resolveRelated(post: BlogPostDTO, all: BlogPostSummaryDTO[]): BlogPostSummaryDTO[] {
   const others = all.filter((p) => p.slug !== post.slug);
   if (post.relatedSlugs.length) {
     const picked = post.relatedSlugs
       .map((slug) => others.find((p) => p.slug === slug))
-      .filter((p): p is BlogPostDTO => Boolean(p));
+      .filter((p): p is BlogPostSummaryDTO => Boolean(p));
     if (picked.length) return picked.slice(0, 3);
   }
   return others.slice(0, 3);

@@ -1,4 +1,10 @@
-import type { TourCategory, TourDTO, TourFacts, TourImage } from "@/lib/content-types";
+import type {
+  TourCategory,
+  TourDTO,
+  TourFacts,
+  TourImage,
+  TourSummaryDTO,
+} from "@/lib/content-types";
 
 /**
  * Row → DTO for a `tours` record.
@@ -71,6 +77,34 @@ export function toTourDTO(row: TourRowLike): TourDTO {
     relatedSlugs: strArr(row.related_slugs),
     relatedPostSlugs: strArr(row.related_post_slugs),
     hiddenSections: strArr(row.hidden_sections),
+  };
+}
+
+/**
+ * Narrows a tour to what list endpoints ship. A `Pick` type alone would still serialise
+ * every field the object carries, so the copy is spelled out.
+ */
+export function toTourSummary(tour: TourDTO): TourSummaryDTO {
+  return {
+    id: tour.id,
+    slug: tour.slug,
+    title: tour.title,
+    category: tour.category,
+    heroImage: tour.heroImage,
+    heroImageAlt: tour.heroImageAlt,
+    // Cards only fall back to the first gallery photo when there is no hero image.
+    images: tour.images.slice(0, 1),
+    durationLabel: tour.durationLabel,
+    durationDays: tour.durationDays,
+    priceUsd: tour.priceUsd,
+    discountPriceUsd: tour.discountPriceUsd,
+    destinationLabel: tour.destinationLabel,
+    activityLabel: tour.activityLabel,
+    isFeatured: tour.isFeatured,
+    activitiesCount: tour.activitiesCount,
+    groupSizeMax: tour.groupSizeMax,
+    stopsCount: tour.stopsCount,
+    summary: tour.summary,
   };
 }
 

@@ -1,13 +1,13 @@
 import { PhotoFrame, gradientFor } from "@/components/ui/photo-frame";
 import { ButtonLink } from "@/components/ui/button";
 import { formatPrice } from "@/components/tour-card";
-import type { TourDTO } from "@/lib/content-types";
+import type { TourSummaryDTO } from "@/lib/content-types";
 
 /**
  * Sidebar upsell: a handful of hand-picked tours styled for a first-time visitor to book
  * quickly. Shared by the blog sidebar and the tour page's own sidebar.
  */
-export function BestValueTours({ tours, limit = 4 }: { tours: TourDTO[]; limit?: number }) {
+export function BestValueTours({ tours, limit = 4 }: { tours: TourSummaryDTO[]; limit?: number }) {
   const picks = tours.slice(0, limit);
   if (!picks.length) return null;
 

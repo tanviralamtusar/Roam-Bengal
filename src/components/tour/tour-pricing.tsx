@@ -4,7 +4,7 @@ import { FormatText } from "@/components/ui/format-text";
 import { FeatureIcon } from "@/components/art/icons";
 import { useSiteSettings } from "@/hooks/use-site-settings";
 import { formatPrice } from "@/components/tour-card";
-import type { PriceTier, TourDTO } from "@/lib/content-types";
+import type { PriceTier, TourDTO, TourSummaryDTO } from "@/lib/content-types";
 
 /**
  * "Choose Your Perfect Experience" — the per-group-size price cards, the promises panel
@@ -180,7 +180,7 @@ export function TourPricing({ tour }: { tour: TourDTO }) {
   );
 }
 
-export function TourBookingCta({ tour, tours }: { tour: TourDTO; tours: TourDTO[] }) {
+export function TourBookingCta({ tour, tours }: { tour: TourDTO; tours: TourSummaryDTO[] }) {
   const { tour_pricing: copy } = useSiteSettings();
 
   return (

@@ -245,6 +245,34 @@ export interface TourDTO {
   hiddenSections: string[];
 }
 
+/**
+ * What a *list* of tours carries: the fields tour cards, the related / best-value rails
+ * and the booking dialog's tour picker read. List endpoints ship this rather than full
+ * DTOs — every published tour's itinerary, FAQs, overview and gallery made the homepage
+ * HTML over 1 MB. A tour page gets its own full `TourDTO` from `getTourBySlug`.
+ */
+export type TourSummaryDTO = Pick<
+  TourDTO,
+  | "id"
+  | "slug"
+  | "title"
+  | "category"
+  | "heroImage"
+  | "heroImageAlt"
+  | "images"
+  | "durationLabel"
+  | "durationDays"
+  | "priceUsd"
+  | "discountPriceUsd"
+  | "destinationLabel"
+  | "activityLabel"
+  | "isFeatured"
+  | "activitiesCount"
+  | "groupSizeMax"
+  | "stopsCount"
+  | "summary"
+>;
+
 export interface ActivityDTO {
   id: string;
   slug: string;
@@ -296,6 +324,10 @@ export interface BlogPostDTO {
   /** Curated "read next" slugs. Empty means fall back to the newest other posts. */
   relatedSlugs: string[];
 }
+
+/** A post as list endpoints ship it — everything but the article itself. A post page
+ *  gets its full `BlogPostDTO` from `getPostBySlug`. See `TourSummaryDTO`. */
+export type BlogPostSummaryDTO = Omit<BlogPostDTO, "body">;
 
 export interface TestimonialImage {
   url: string;

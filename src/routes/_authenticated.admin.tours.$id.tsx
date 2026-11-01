@@ -1,7 +1,6 @@
 import { useMemo, useState, type ReactNode } from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { marked } from "marked";
-import { z } from "zod";
 import {
   AdminButton,
   ErrorBanner,
@@ -56,13 +55,16 @@ import {
 import { toTourDTO } from "@/lib/tour-dto";
 import { tourPreviewChannel } from "@/lib/tour-preview";
 import { slugify } from "@/lib/slugify";
+import { searchEnum } from "@/lib/search-params";
 
 const GLANCE_SEPARATOR_PATTERN = /\s+(?:—|–|-|\|)\s+/;
 
 export const Route = createFileRoute("/_authenticated/admin/tours/$id")({
   // Only consulted for a brand-new tour — picks which category the "+ New tour" link
   // pre-selects so single-day and multi-day both land on an already-correct form.
-  validateSearch: z.object({ category: z.enum(["day-tour", "multi-day"]).optional() }),
+  validateSearch: (search): { category?: "day-tour" | "multi-day" } => ({
+    category: searchEnum(search.category, ["day-tour", "multi-day"]),
+  }),
   loader: async ({ params }) => {
     const isNew = params.id === "new";
     const [tour, activities, destinations, themes, siteFaqs] = await Promise.all([

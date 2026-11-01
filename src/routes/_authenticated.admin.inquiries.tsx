@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { z } from "zod";
 import {
   AdminButton,
   Badge,
@@ -14,10 +13,11 @@ import {
   adminListInquiries,
   adminUpdateInquiry,
 } from "@/lib/admin-content.functions";
+import { searchEnum } from "@/lib/search-params";
 
 export const Route = createFileRoute("/_authenticated/admin/inquiries")({
-  validateSearch: z.object({
-    status: z.enum(["all", "new", "read", "handled"]).optional().catch("all"),
+  validateSearch: (search): { status?: "all" | "new" | "read" | "handled" } => ({
+    status: searchEnum(search.status, ["all", "new", "read", "handled"]),
   }),
   loader: () => adminListInquiries(),
   component: InquiriesScreen,

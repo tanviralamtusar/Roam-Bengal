@@ -1,17 +1,19 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { serverClient } from "@/integrations/mysql/client.server";
-import { toTourDTO } from "@/lib/tour-dto";
-import { toPostDTO } from "@/lib/post-dto";
+import { toTourDTO, toTourSummary } from "@/lib/tour-dto";
+import { toPostDTO, toPostSummary } from "@/lib/post-dto";
 import { toTestimonialDTO } from "@/lib/testimonial-dto";
 import type {
   ActivityDTO,
   BlogPostDTO,
+  BlogPostSummaryDTO,
   FaqDTO,
   JsonValue,
   SettingsMap,
   TestimonialDTO,
   TourDTO,
+  TourSummaryDTO,
 } from "@/lib/content-types";
 
 type TourRow = Record<string, any>;
@@ -61,14 +63,16 @@ function unwrap<T>(
 
 const slugInput = z.object({ slug: z.string().min(1).max(200) });
 
+/** Card-sized: loader data is serialised into the page HTML, so a list must not carry
+ *  every tour's full detail. See `TourSummaryDTO`. */
 export const listPublishedTours = createServerFn({ method: "GET" }).handler(
-  async (): Promise<TourDTO[]> => {
+  async (): Promise<TourSummaryDTO[]> => {
     const { data, error } = await serverClient()
       .from("tours")
       .select("*")
       .eq("is_published", true)
       .order("sort_order", { ascending: true });
-    return unwrap("listPublishedTours", data, error).map(toTour);
+    return unwrap("listPublishedTours", data, error).map((row) => toTourSummary(toTour(row)));
   },
 );
 
@@ -88,14 +92,15 @@ export const getTourBySlug = createServerFn({ method: "GET" })
     return data ? toTour(data) : null;
   });
 
+/** Without article bodies, for the same reason as `listPublishedTours`. */
 export const listPublishedPosts = createServerFn({ method: "GET" }).handler(
-  async (): Promise<BlogPostDTO[]> => {
+  async (): Promise<BlogPostSummaryDTO[]> => {
     const { data, error } = await serverClient()
       .from("blog_posts")
       .select("*")
       .eq("is_published", true)
       .order("sort_order", { ascending: true });
-    return unwrap("listPublishedPosts", data, error).map(toPost);
+    return unwrap("listPublishedPosts", data, error).map((row) => toPostSummary(toPost(row)));
   },
 );
 
