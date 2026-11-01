@@ -212,14 +212,17 @@ export function TripBuilderSection(_props: HomeSectionProps) {
   return (
     <section className="shell relative isolate overflow-hidden bg-[#fffdf7] pt-[70px] pb-[60px]">
       <div className="tripBackground" />
-      <div
+      {/* Full width, pinned to the bottom — what `background-size: 100% auto` at
+          `center bottom` drew. An <img> rather than a CSS background so it can be lazy: a
+          background image downloads as soon as its style applies, at high priority,
+          alongside the hero photo, although this section starts below the fold. */}
+      <img
+        src={craftsCustomImage}
+        alt=""
         aria-hidden="true"
-        className="pointer-events-none absolute inset-0 z-0 bg-no-repeat"
-        style={{
-          backgroundImage: `url("${craftsCustomImage}")`,
-          backgroundPosition: "center bottom",
-          backgroundSize: "100% auto",
-        }}
+        loading="lazy"
+        decoding="async"
+        className="pointer-events-none absolute inset-x-0 bottom-0 z-0 h-auto w-full"
       />
       <div aria-hidden="true" className="pointer-events-none absolute inset-0 z-0 bg-black/40" />
       <div className="wide relative z-10">

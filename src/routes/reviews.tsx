@@ -3,7 +3,7 @@ import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { WhatsAppFloat } from "@/components/whatsapp-float";
 import { CtaStrip } from "@/components/cta-strip";
-import { PhotoFrame } from "@/components/ui/photo-frame";
+import { BANNER_SIZES, PhotoFrame } from "@/components/ui/photo-frame";
 import { imageMeta } from "@/lib/image-meta";
 import { FormatText } from "@/components/ui/format-text";
 import { useSiteSettings } from "@/hooks/use-site-settings";
@@ -88,7 +88,7 @@ function Reviews() {
         <main id="main">
           {/* Hero */}
           <section className="full-bleed relative flex min-h-[500px] flex-col overflow-hidden pb-[30px] text-center text-white">
-            <PhotoFrame src={reviews.banner_image} alt={imageMeta(reviews, "banner_image").alt || reviews.heading_1} title={imageMeta(reviews, "banner_image").title} gradientCss={HERO_BG} priority showPlaceholder={false} className="absolute inset-0 z-0 h-full w-full" />
+            <PhotoFrame src={reviews.banner_image} alt={imageMeta(reviews, "banner_image").alt || reviews.heading_1} title={imageMeta(reviews, "banner_image").title} gradientCss={HERO_BG} priority sizes={BANNER_SIZES} showPlaceholder={false} className="absolute inset-0 z-0 h-full w-full" />
             <div className="absolute inset-0 z-[1] bg-black/60" aria-hidden="true" />
             <SiteHeader logo="light" />
             <div
@@ -176,6 +176,7 @@ function Reviews() {
                     title={t.avatarTitle || undefined}
                     gradientCss={PHOTO_FRAMES[i % PHOTO_FRAMES.length]}
                     placeholderLabel={`${t.author.split(" ")[0]?.toLowerCase()}.jpg`}
+                    sizes="66px"
                     className="h-[66px] w-[66px] shrink-0 rounded-xl"
                   />
                 </div>

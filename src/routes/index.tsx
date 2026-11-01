@@ -3,7 +3,7 @@ import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { WhatsAppFloat } from "@/components/whatsapp-float";
 import { ButtonLink } from "@/components/ui/button";
-import { PhotoFrame } from "@/components/ui/photo-frame";
+import { HERO_SIZES, PhotoFrame } from "@/components/ui/photo-frame";
 import { imageMeta } from "@/lib/image-meta";
 import { FormatText } from "@/components/ui/format-text";
 import { useSiteSettings, useHomeLayout } from "@/hooks/use-site-settings";
@@ -47,6 +47,7 @@ function Home() {
           title={imageMeta(hero, "background_url").title}
           gradientCss="transparent"
           priority
+          sizes={HERO_SIZES}
           className="absolute inset-0 z-0 h-full w-full"
           placeholderLabel="images/hero-boat.png"
         />

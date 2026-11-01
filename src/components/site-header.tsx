@@ -4,6 +4,7 @@ import { Link, useRouterState } from "@tanstack/react-router";
 import { ButtonLink, normalizePath } from "@/components/ui/button";
 import { useSiteSettings } from "@/hooks/use-site-settings";
 import { imageMeta } from "@/lib/image-meta";
+import { mediaSrcSet } from "@/lib/media-sizes";
 
 const TOUR_MENU_ITEMS = [
   { label: "Day Tour", category: "day-tour" },
@@ -72,8 +73,12 @@ export function SiteHeader({
     >
       <nav className="wrap flex items-center justify-between gap-6 py-[22px]">
         <Link to="/" className="block leading-none" aria-label={logoAlt}>
+          {/* Drawn 60/80px tall at the logo's own aspect ratio; `sizes` allows for a logo
+              up to 4:1 wide. */}
           <img
             src={logoSrc}
+            srcSet={mediaSrcSet(logoSrc)}
+            sizes="(min-width: 640px) 320px, 240px"
             alt={logoAlt}
             title={logoTitle || undefined}
             className="h-[60px] w-auto sm:h-[80px] shrink-0 drop-shadow-[0_3px_8px_rgba(0,0,0,0.25)]"

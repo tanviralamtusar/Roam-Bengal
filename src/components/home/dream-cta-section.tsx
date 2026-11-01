@@ -1,5 +1,6 @@
 import { useSiteSettings } from "@/hooks/use-site-settings";
 import { imageMeta } from "@/lib/image-meta";
+import { mediaSrcSet } from "@/lib/media-sizes";
 import { ButtonLink } from "@/components/ui/button";
 import { FormatText } from "@/components/ui/format-text";
 import { DhakaScene } from "@/components/art/dhaka-scene";
@@ -41,6 +42,8 @@ export function DreamCtaSection(_props: HomeSectionProps) {
         {homepage.cta_image ? (
           <img
             src={homepage.cta_image}
+            srcSet={mediaSrcSet(homepage.cta_image)}
+            sizes="(min-width: 980px) 50vw, 100vw"
             alt={photo.alt}
             title={photo.title || undefined}
             loading="lazy"

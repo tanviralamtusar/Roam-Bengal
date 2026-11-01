@@ -4,7 +4,7 @@ import { SiteFooter } from "@/components/site-footer";
 import { WhatsAppFloat } from "@/components/whatsapp-float";
 import { TourCard } from "@/components/tour-card";
 import { ButtonLink } from "@/components/ui/button";
-import { PhotoFrame } from "@/components/ui/photo-frame";
+import { BANNER_SIZES, PhotoFrame } from "@/components/ui/photo-frame";
 import { imageMeta } from "@/lib/image-meta";
 import { FormatText } from "@/components/ui/format-text";
 import { DhakaScene } from "@/components/art/dhaka-scene";
@@ -18,6 +18,7 @@ import {
 import { activityPreviewChannel } from "@/lib/activity-preview";
 import type { TourCategory } from "@/lib/content-types";
 import { searchEnum, searchString } from "@/lib/search-params";
+import { mediaSrcSet } from "@/lib/media-sizes";
 
 export const Route = createFileRoute("/tours/")({
   validateSearch: (search): { theme?: string; category?: TourCategory } => ({
@@ -121,6 +122,7 @@ function ToursIndex() {
           title={bannerPhoto.title}
           gradientCss="transparent"
           priority
+          sizes={BANNER_SIZES}
           placeholderLabel="images/tours-banner.jpg"
           className="absolute inset-0 z-0 h-full w-full"
         />
@@ -260,6 +262,8 @@ function ToursIndex() {
             {tours_page.cta_image ? (
               <img
                 src={tours_page.cta_image}
+                srcSet={mediaSrcSet(tours_page.cta_image)}
+                sizes="(min-width: 980px) 50vw, 100vw"
                 alt={ctaPhoto.alt}
                 title={ctaPhoto.title || undefined}
                 loading="lazy"

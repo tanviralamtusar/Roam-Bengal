@@ -13,6 +13,7 @@ import birdsImg from "@/assets/bird.webp";
 import routeImg from "@/assets/map.webp";
 import pinTrailImg from "@/assets/loc.webp";
 import type { TestimonialDTO } from "@/lib/content-types";
+import { mediaSrcSet } from "@/lib/media-sizes";
 import {
   PLATFORM_BRANDS,
   REVIEWS_BG,
@@ -291,6 +292,8 @@ function ReviewCard({ review, tint }: { review: TestimonialDTO; tint: number }) 
         {review.avatarUrl ? (
           <img
             src={review.avatarUrl}
+            srcSet={mediaSrcSet(review.avatarUrl)}
+            sizes="46px"
             alt={review.avatarAlt || ""}
             title={review.avatarTitle || undefined}
             loading="lazy"

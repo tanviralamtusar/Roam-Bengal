@@ -4,6 +4,7 @@ import { isExternal, normalizePath } from "@/components/ui/button";
 import { FormatText } from "@/components/ui/format-text";
 import { useSiteSettings } from "@/hooks/use-site-settings";
 import { imageMeta } from "@/lib/image-meta";
+import { mediaSrcSet } from "@/lib/media-sizes";
 import { Mail, MapPin, Phone, type LucideIcon } from "lucide-react";
 import type { IconType } from "react-icons";
 import { FaLinkedinIn } from "react-icons/fa";
@@ -78,6 +79,8 @@ export function SiteFooter() {
               photo and pushed out the homepage's Largest Contentful Paint. */}
           <img
             src={footer.logo_url || "/logo-white.png"}
+            srcSet={mediaSrcSet(footer.logo_url)}
+            sizes="205px"
             alt={logoMeta.alt || header.logo_alt}
             title={logoMeta.title || undefined}
             loading="lazy"

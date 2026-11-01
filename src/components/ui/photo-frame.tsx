@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { mediaSrcSet } from "@/lib/media-sizes";
 
 /**
  * Every image in reference design/ is a placeholder: a gradient-filled frame, a visible
@@ -22,6 +23,16 @@ export const FRAME_GRADIENTS = {
 
 export type FrameGradient = keyof typeof FRAME_GRADIENTS;
 
+/**
+ * `sizes` for full-bleed photos cropped to cover a box taller than a phone is wide. A
+ * landscape photo is then drawn wider than the screen (the homepage hero is ~790px tall
+ * on a phone, so a 3:2 photo spans ~1190px), and `100vw` would pick a file too small
+ * to stay sharp.
+ */
+export const HERO_SIZES = "(max-width: 1200px) 1200px, 100vw";
+/** Page banners, ~480–500px tall on a phone. */
+export const BANNER_SIZES = "(max-width: 800px) 800px, 100vw";
+
 /** Stable gradient per slug, so a tour keeps the same fallback colour across pages. */
 export function gradientFor(seed: string): FrameGradient {
   const keys = Object.keys(FRAME_GRADIENTS) as FrameGradient[];
@@ -41,6 +52,13 @@ interface PhotoFrameProps {
   style?: React.CSSProperties;
   /** Hero images should not be lazy — it delays LCP. */
   priority?: boolean;
+  /**
+   * How wide the photo is drawn, for picking a resized upload (`srcset`). The default,
+   * the full viewport, is never too small for a frame inside the page — pass something
+   * narrower for small frames, or wider for a tall `object-cover` frame that crops a
+   * landscape photo.
+   */
+  sizes?: string;
   /** Shown in dev when `src` is empty, mirroring the reference placeholder label. */
   placeholderLabel?: string;
   /** Disable the development placeholder for decorative/background frames. */
@@ -57,11 +75,13 @@ export function PhotoFrame({
   className = "",
   style,
   priority = false,
+  sizes = "100vw",
   placeholderLabel,
   showPlaceholder = true,
   children,
 }: PhotoFrameProps) {
   const [failed, setFailed] = useState(false);
+  const srcSet = mediaSrcSet(src);
   // A previously-broken `src` must not keep failing a later, corrected one — the live
   // admin preview swaps `src` on this same mounted instance instead of reloading.
   useEffect(() => setFailed(false), [src]);
@@ -107,6 +127,8 @@ export function PhotoFrame({
       {showImage ? (
         <img
           src={src!}
+          srcSet={srcSet}
+          sizes={srcSet ? sizes : undefined}
           alt={alt}
           title={title || undefined}
           loading={priority ? "eager" : "lazy"}

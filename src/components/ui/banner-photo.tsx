@@ -1,4 +1,4 @@
-import { PhotoFrame } from "@/components/ui/photo-frame";
+import { BANNER_SIZES, PhotoFrame } from "@/components/ui/photo-frame";
 
 /**
  * Optional hero photo behind a page banner.
@@ -34,6 +34,7 @@ export function BannerPhoto({
         title={title}
         gradientCss="transparent"
         priority
+        sizes={BANNER_SIZES}
         className="absolute inset-0 z-0 h-full w-full"
       />
       <div className={`absolute inset-0 z-0 ${overlayClassName}`} aria-hidden="true" />
