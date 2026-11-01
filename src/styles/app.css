@@ -198,8 +198,11 @@
   --font-opensans: "Open Sans", sans-serif;
   --font-montserrat: "Montserrat", sans-serif;
 
-  /* The reference designs use a single 980px breakpoint (plus 640px on contact). */
-  --breakpoint-nav: 980px;
+  /* The reference designs use a single 980px breakpoint (plus 640px on contact).
+     Written in rem (980 / 16) to match Tailwind's own breakpoints: Tailwind can't order a px
+     breakpoint against rem ones, so at 980px it emitted `nav:` rules *before* `sm:`/`md:`, and
+     `md:grid-cols-2 nav:grid-cols-3` stayed at two columns on desktop. */
+  --breakpoint-nav: 61.25rem;
 
   /* Admin chrome. The panel sits on a ground rather than `paper` so a white Card reads as a
      raised surface — the same paper-on-cream separation the public pages already use. It was
