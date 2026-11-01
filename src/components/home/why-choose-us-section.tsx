@@ -1,3 +1,5 @@
+import { useState } from "react";
+import { ChevronDown } from "lucide-react";
 import { useSiteSettings } from "@/hooks/use-site-settings";
 import { PhotoFrame } from "@/components/ui/photo-frame";
 import { imageMeta } from "@/lib/image-meta";
@@ -6,9 +8,14 @@ import { WhyIcon } from "@/components/art/icons";
 import { STORY_BG } from "./palette";
 import type { HomeSectionProps } from "./registry";
 
+/** Below the `nav` breakpoint the rest of the list waits behind "See more". */
+const MOBILE_VISIBLE_ITEMS = 2;
+
 export function WhyChooseUsSection(_props: HomeSectionProps) {
   const { homepage } = useSiteSettings();
   const photo = imageMeta(homepage, "why_image");
+  const [expanded, setExpanded] = useState(false);
+  const hasMore = homepage.why_items.length > MOBILE_VISIBLE_ITEMS;
   return (
     <section id="section-why-choose-us" className="py-[90px]" style={{ background: STORY_BG }}>
       <div className="wrap grid items-center gap-10 nav:grid-cols-2 nav:gap-[60px]">
@@ -21,9 +28,14 @@ export function WhyChooseUsSection(_props: HomeSectionProps) {
           <p className="mb-[30px] max-w-[480px] text-[0.95rem] text-muted">
             <FormatText>{homepage.why_intro}</FormatText>
           </p>
-          <div className="flex flex-col gap-[26px]">
-            {homepage.why_items.map((item) => (
-              <div key={item.title} className="flex items-start gap-[18px]">
+          <div id="why-items" className="flex flex-col gap-[26px]">
+            {homepage.why_items.map((item, i) => (
+              <div
+                key={item.title}
+                className={`items-start gap-[18px] ${
+                  !expanded && i >= MOBILE_VISIBLE_ITEMS ? "hidden nav:flex" : "flex"
+                }`}
+              >
                 <WhyIcon name={item.icon} />
                 <div>
                   <h3 className="mb-1 font-kalam text-[1.1rem] font-bold text-ink">{item.title}</h3>
@@ -34,6 +46,21 @@ export function WhyChooseUsSection(_props: HomeSectionProps) {
               </div>
             ))}
           </div>
+          {hasMore ? (
+            <button
+              type="button"
+              onClick={() => setExpanded((v) => !v)}
+              aria-expanded={expanded}
+              aria-controls="why-items"
+              className="mt-[22px] inline-flex items-center gap-1 text-[0.9rem] font-semibold text-accent hover:underline nav:hidden"
+            >
+              {expanded ? "See less" : "See more"}
+              <ChevronDown
+                className={`size-4 transition-transform ${expanded ? "rotate-180" : ""}`}
+                aria-hidden
+              />
+            </button>
+          ) : null}
         </div>
 
         <PhotoFrame
