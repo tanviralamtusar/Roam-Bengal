@@ -239,7 +239,7 @@ function ToursIndex() {
           <HolidayToursSection tours={themeFiltered} />
         )}
 
-        <section id="contact" className="py-[70px]" style={{ background: DREAM_BG }}>
+        <section id="contact" className="pt-[70px] nav:pb-[70px]" style={{ background: DREAM_BG }}>
           <div className="wrap grid items-center gap-10 nav:grid-cols-2">
             <div>
               <h2 className="mb-[22px] font-kalam text-[clamp(1.9rem,3.4vw,2.5rem)] leading-[1.3] font-bold">
@@ -266,7 +266,7 @@ function ToursIndex() {
                 title={ctaPhoto.title || undefined}
                 loading="lazy"
                 decoding="async"
-                className="aspect-[46/38] w-full object-contain"
+                className="w-full object-contain nav:aspect-[46/38]"
               />
             ) : (
               <DhakaScene className="h-auto w-full" />

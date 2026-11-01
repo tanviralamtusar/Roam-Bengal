@@ -17,7 +17,8 @@ export function MultiDayToursSection({ tours }: HomeSectionProps) {
     .sort((a, b) => Number(b.isFeatured) - Number(a.isFeatured))
     .slice(0, 3);
 return (
-    <section id="multi-day-tours" className="shell pt-20 pb-[30px] text-center">
+    // No bottom spacing on mobile: the next section's top padding is gap enough.
+    <section id="multi-day-tours" className="shell pt-20 text-center nav:pb-[30px]">
       <SectionHead kicker={homepage.multiday_kicker}>{homepage.multiday_heading}</SectionHead>
 
       {multiDayTours.length ? (
@@ -33,7 +34,7 @@ return (
         </div>
       )}
 
-      <div className="mt-11 mb-[90px]">
+      <div className="mt-11 nav:mb-[90px]">
         <ButtonLink to="/tours" search={{ category: "multi-day" }} variant="outline-dark">
           View All Multi-Day Tours →
         </ButtonLink>

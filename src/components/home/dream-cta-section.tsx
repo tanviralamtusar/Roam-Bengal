@@ -10,7 +10,13 @@ export function DreamCtaSection(_props: HomeSectionProps) {
   const { homepage } = useSiteSettings();
   const photo = imageMeta(homepage, "cta_image");
   return (
-    <section id="contact" className="py-[70px]" style={{ background: DREAM_BG }}>
+    // Tighter on mobile: a shorter gap above the heading, and the illustration sits
+    // straight on the footer with no bottom padding.
+    <section
+      id="contact"
+      className="pt-[40px] nav:pt-[70px] nav:pb-[70px]"
+      style={{ background: DREAM_BG }}
+    >
       <div className="wrap grid items-center gap-10 nav:grid-cols-2">
         <div>
           <h2 className="mb-[22px] font-kalam text-[clamp(1.9rem,3.4vw,2.5rem)] leading-[1.3] font-bold">
@@ -30,7 +36,8 @@ export function DreamCtaSection(_props: HomeSectionProps) {
         {/* The drawing is the designed default, not a placeholder, so it stays until a
             photo is actually uploaded. The upload sits directly on the section — no frame,
             fill, or shadow — so a transparent PNG reads the same way the drawing does, and
-            the drawing's 460×380 ratio is kept so swapping does not shift the section. */}
+            the drawing's 460×380 ratio is kept on desktop so swapping does not shift the
+            section. On mobile the upload keeps its own ratio, so no letterbox gap shows. */}
         {homepage.cta_image ? (
           <img
             src={homepage.cta_image}
@@ -38,7 +45,7 @@ export function DreamCtaSection(_props: HomeSectionProps) {
             title={photo.title || undefined}
             loading="lazy"
             decoding="async"
-            className="aspect-[46/38] w-full object-contain"
+            className="w-full object-contain nav:aspect-[46/38]"
           />
         ) : (
           <DhakaScene className="h-auto w-full" />

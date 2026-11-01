@@ -17,7 +17,11 @@ export function WhyChooseUsSection(_props: HomeSectionProps) {
   const [expanded, setExpanded] = useState(false);
   const hasMore = homepage.why_items.length > MOBILE_VISIBLE_ITEMS;
   return (
-    <section id="section-why-choose-us" className="py-[90px]" style={{ background: STORY_BG }}>
+    <section
+      id="section-why-choose-us"
+      className="pt-[90px] nav:pb-[90px]"
+      style={{ background: STORY_BG }}
+    >
       <div className="wrap grid items-center gap-10 nav:grid-cols-2 nav:gap-[60px]">
         <div>
           <h2 className="mb-[18px] font-kalam text-[clamp(2rem,3.6vw,2.7rem)] leading-[1.15] font-bold text-green">

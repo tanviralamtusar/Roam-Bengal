@@ -11,7 +11,8 @@ export function JournalSection({ posts }: HomeSectionProps) {
   const journalPosts = posts.slice(0, 3);
 
   return (
-    <section id="blog" className="shell pt-20 pb-[30px] text-center">
+    // No bottom spacing on mobile: the next section's top padding is gap enough.
+    <section id="blog" className="shell pt-20 text-center nav:pb-[30px]">
       <SectionHead kicker={homepage.journal_kicker}>{homepage.journal_heading}</SectionHead>
 
       <div className="wide grid gap-[26px] sm:grid-cols-2 nav:grid-cols-3">
@@ -49,7 +50,7 @@ export function JournalSection({ posts }: HomeSectionProps) {
         ))}
       </div>
 
-      <div className="mt-11 mb-[90px]">
+      <div className="mt-11 nav:mb-[90px]">
         <ButtonLink to="/blog" variant="outline-dark">
           View All Articles →
         </ButtonLink>
