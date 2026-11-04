@@ -224,7 +224,6 @@ export function TripBuilderSection(_props: HomeSectionProps) {
         decoding="async"
         className="pointer-events-none absolute inset-x-0 bottom-0 z-0 h-auto w-full"
       />
-      <div aria-hidden="true" className="pointer-events-none absolute inset-0 z-0 bg-black/40" />
       <div className="wide relative z-10">
         <div
           aria-label="Ready-made trip ideas"
@@ -233,7 +232,7 @@ export function TripBuilderSection(_props: HomeSectionProps) {
           <h2 className="mb-2 font-display text-[1.9rem] font-bold">
             {homepage.trip_builder_heading}
           </h2>
-          <p className="text-center text-[0.92rem] text-white">
+          <p className="text-center text-[0.92rem] text-ink">
             <FormatText>{homepage.trip_builder_intro}</FormatText>
           </p>
           {/* A 2×2 grid on phones, where the pills otherwise stack one per row. The cells
