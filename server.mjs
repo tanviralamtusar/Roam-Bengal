@@ -44,6 +44,29 @@ function renderErrorPage() {
 </html>`;
 }
 
+// The site has one public address. A request that reaches this app on another hostname
+// (www., the old test subdomain) gets a permanent redirect to the same path on the primary
+// domain, so search engines move their entries across instead of indexing a second copy.
+// Only the hosts listed here redirect; any other Host header (localhost, the CDN's own
+// health checks) is served as-is, so this can never loop on the primary domain.
+const PRIMARY_ORIGIN = (process.env.VITE_SITE_URL || "https://roambengal.com").replace(/\/+$/, "");
+const ALIAS_HOSTS = new Set(["www.roambengal.com", "test.roambengal.com"]);
+ALIAS_HOSTS.delete(new URL(PRIMARY_ORIGIN).hostname);
+
+const redirectAliasHosts = (request, next) => {
+  const host = (request.headers.get("x-forwarded-host") || request.headers.get("host") || "")
+    .split(",")[0]
+    .trim()
+    .toLowerCase()
+    .replace(/:\d+$/, "");
+  if (!ALIAS_HOSTS.has(host)) return next();
+  const { pathname, search } = new URL(request.url);
+  return new Response(null, {
+    status: 301,
+    headers: { location: `${PRIMARY_ORIGIN}${pathname}${search}` },
+  });
+};
+
 // Vite content-hashes everything under /assets, so it is safe to cache forever.
 const immutableAssets = async (request, next) => {
   const response = await next();
@@ -71,6 +94,6 @@ async function safeFetch(request) {
 serve({
   port: Number(process.env.PORT) || 3000,
   hostname: process.env.HOST || "0.0.0.0",
-  middleware: [immutableAssets, serveStatic({ dir: clientDir })],
+  middleware: [redirectAliasHosts, immutableAssets, serveStatic({ dir: clientDir })],
   fetch: safeFetch,
 });

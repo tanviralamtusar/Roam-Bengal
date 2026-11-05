@@ -26,7 +26,16 @@ function getSiteUrl(): string {
   return "https://roambengal.com";
 }
 
-export const SITE_URL = getSiteUrl();
+// A trailing slash in the env value would otherwise double up in every `${SITE_URL}/path`.
+export const SITE_URL = getSiteUrl().replace(/\/+$/, "");
+
+/**
+ * Absolute URL of a page on the primary domain, written the way the sitemap writes it:
+ * no trailing slash except on the home page, no query string.
+ */
+export function canonicalUrlFor(pathname: string): string {
+  return `${SITE_URL}${pathname.replace(/\/+$/, "") || "/"}`;
+}
 
 /**
  * Builds the array of `<meta>` tags for TanStack Router's `head()` function.

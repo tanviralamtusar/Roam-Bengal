@@ -35,7 +35,7 @@ export const Route = createFileRoute("/tours/")({
   },
   head: () => ({
     meta: [
-      { title: "Signature Private Tours of Bangladesh | Roam Bengal" },
+      { title: "Signature Private Tours Packages of Bangladesh | Roam Bengal" },
       {
         name: "description",
         content:

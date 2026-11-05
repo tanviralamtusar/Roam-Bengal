@@ -4,6 +4,7 @@ import {
   Outlet,
   Scripts,
   createRootRoute,
+  useRouterState,
 } from "@tanstack/react-router";
 import type { ReactNode } from "react";
 import appCssText from "@/styles/app.css?inline";
@@ -15,6 +16,7 @@ import { mergeSettings, useSiteSettings } from "@/hooks/use-site-settings";
 import { siteDefaults } from "@/content/site-defaults";
 import { customFontCss, customFontUrls, resolveCustomFonts } from "@/lib/custom-fonts";
 import { usePreviewFocus } from "@/lib/preview-focus";
+import { canonicalUrlFor } from "@/lib/seo-head";
 
 export const Route = createRootRoute({
   // Header and footer copy lives in `site_settings`, so every page needs it. Loading it
@@ -64,6 +66,30 @@ function RootComponent() {
   );
 }
 
+/**
+ * A canonical link on every page, pointing at the same path on the primary domain. Without
+ * one, Google treats whichever hostname it crawled first (www., an old test subdomain) as
+ * the page's real address and keeps showing that in results.
+ *
+ * Routes whose `head()` sets their own canonical (tour and blog detail pages, where an
+ * admin can author one) are left alone: TanStack does not dedupe `<link>` tags, and two
+ * conflicting canonicals make Google ignore both. Error and not-found pages get none.
+ */
+function DefaultCanonical() {
+  const href = useRouterState({
+    select: (state) => {
+      const routeSetsOwn = state.matches.some((match) =>
+        match.links?.some((link) => link?.rel === "canonical"),
+      );
+      const failed = state.matches.some(
+        (match) => match.status !== "success" || match.globalNotFound,
+      );
+      return routeSetsOwn || failed ? null : canonicalUrlFor(state.location.pathname);
+    },
+  });
+  return href ? <link rel="canonical" href={href} /> : null;
+}
+
 const APP_CSS_ID = "app-css";
 
 /**
@@ -92,6 +118,7 @@ function RootDocument({ children }: { children: ReactNode }) {
     <html lang="en">
       <head>
         <HeadContent />
+        <DefaultCanonical />
         {/* Keep the shell styled even if a stale CDN/HTML response references an old
             content-hashed stylesheet that is no longer present after a deploy. */}
         <style id={APP_CSS_ID} dangerouslySetInnerHTML={{ __html: appCss }} />
