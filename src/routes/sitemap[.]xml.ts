@@ -13,7 +13,8 @@ function toW3cDate(value: string | null | undefined): string | null {
   if (!value) return null;
   const iso = /^\d{4}-\d{2}-\d{2} \d{2}:\d{2}/.test(value) ? `${value.replace(" ", "T")}Z` : value;
   const date = new Date(iso);
-  return Number.isNaN(date.getTime()) ? null : date.toISOString();
+  // Google's documented form, `YYYY-MM-DDThh:mm:ss+00:00` — no fractional seconds.
+  return Number.isNaN(date.getTime()) ? null : date.toISOString().replace(/\.\d{3}Z$/, "+00:00");
 }
 
 function escapeXml(value: string): string {
