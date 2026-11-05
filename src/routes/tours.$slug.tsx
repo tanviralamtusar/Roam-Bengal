@@ -570,9 +570,12 @@ function TourDetail() {
 
 
               {sidebarPromises.length ? (
-                <ul className="mt-6 flex flex-col gap-3.5 text-left text-[1rem] leading-6">
+                <ul className="mt-6 flex flex-col gap-3.5 text-[1rem] leading-6">
                   {sidebarPromises.map((p) => (
-                    <li key={p} className="flex gap-2">
+                    // `text-left` sits on the <li> itself: the base `li { text-align: justify }`
+                    // rule beats anything inherited from the <ul>, and justifying a short
+                    // wrapped label stretches its words apart.
+                    <li key={p} className="flex gap-2 text-left">
                       <span className="text-green-bright">✓</span>
                       <strong className="font-semibold text-ink">{p}</strong>
                     </li>
