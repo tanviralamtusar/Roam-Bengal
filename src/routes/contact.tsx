@@ -69,19 +69,21 @@ function Contact() {
 
   return (
     <>
-      <SiteHeader variant="solid" />
+      {banner ? null : <SiteHeader variant="solid" />}
 
       <main id="main">
-        {/* Hero — flat cream by default, a full-bleed photo band once one is set in the admin */}
-        <section className={`full-bleed relative isolate ${banner ? "overflow-hidden py-16" : ""}`}>
+        {/* Hero — flat cream by default. Once a photo is set in the admin it becomes a
+            full-bleed band that runs up behind the header, as on Blog and Reviews. */}
+        <section className={`full-bleed relative isolate ${banner ? "overflow-hidden pb-16" : ""}`}>
           <BannerPhoto
             src={contact.banner_image}
             alt={imageMeta(contact, "banner_image").alt || contact.banner_title}
             title={imageMeta(contact, "banner_image").title}
           />
+          {banner ? <SiteHeader logo="light" /> : null}
           <div
-            className={`relative z-[1] shell mx-auto max-w-[760px] text-center ${
-              banner ? "" : "pt-16 pb-5"
+            className={`relative z-[1] shell mx-auto max-w-[760px] pt-16 text-center ${
+              banner ? "" : "pb-5"
             }`}
           >
             <span
