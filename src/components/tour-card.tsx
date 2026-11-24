@@ -36,7 +36,11 @@ export function TourCard({
   const description = tour.summary?.trim();
 
   return (
-    <article className="overflow-hidden rounded-[22px] border border-rule bg-paper shadow-[0_10px_28px_rgba(0,0,0,0.08)] transition-transform duration-250 hover:-translate-y-1.5">
+    // The whole card is clickable via the "View Details" link's stretched ::after
+    // overlay (positioned against this relative article). Interactive bits that must
+    // stay independently clickable (the save button, links in the summary) sit above
+    // it at z-3; the decorative badges let clicks pass through.
+    <article className="relative overflow-hidden rounded-[22px] border border-rule bg-paper shadow-[0_10px_28px_rgba(0,0,0,0.08)] transition-transform duration-250 hover:-translate-y-1.5">
       <PhotoFrame
         src={tour.heroImage ?? tour.images[0]?.url}
         alt={tour.heroImage ? tour.heroImageAlt || tour.title : tour.images[0]?.alt || tour.title}
@@ -47,7 +51,7 @@ export function TourCard({
         sizes="(min-width: 980px) 400px, (min-width: 768px) 50vw, calc(100vw - 42px)"
         className="aspect-16/10 w-full"
       >
-        <div className="absolute top-4 left-4 z-3 flex flex-col items-start gap-2">
+        <div className="pointer-events-none absolute top-4 left-4 z-3 flex flex-col items-start gap-2">
           {tour.isFeatured ? (
             <span className="inline-flex items-center gap-1.5 rounded-full bg-green px-4 py-1.75 text-[0.78rem] font-bold whitespace-nowrap text-white shadow-[0_6px_14px_rgba(0,0,0,0.18)]">
               <FaStar className="h-3 w-3" /> Featured
@@ -95,7 +99,7 @@ export function TourCard({
         {description ? (
           <div className="mb-4">
             <div
-              className="tour-card-description text-[0.85rem] leading-[1.55] text-muted [&_a]:break-words [&_blockquote]:border-l-2 [&_blockquote]:border-rule [&_blockquote]:pl-3 [&_h1]:mb-2 [&_h1]:font-display [&_h1]:text-[1.2rem] [&_h1]:font-bold [&_h1]:text-green [&_h2]:mb-2 [&_h2]:font-display [&_h2]:text-[1.1rem] [&_h2]:font-bold [&_h2]:text-green [&_h3]:mb-2 [&_h3]:font-display [&_h3]:text-[1rem] [&_h3]:font-bold [&_h3]:text-green [&_ol]:mb-3 [&_ol]:list-decimal [&_ol]:pl-5 [&_p]:mb-3 [&_p:last-child]:mb-0 [&_pre]:mb-3 [&_pre]:overflow-x-auto [&_pre]:rounded [&_pre]:bg-cream [&_pre]:p-2 [&_ul]:mb-3 [&_ul]:list-disc [&_ul]:pl-5"
+              className="tour-card-description text-[0.85rem] leading-[1.55] text-muted [&_a]:relative [&_a]:z-3 [&_a]:break-words [&_blockquote]:border-l-2 [&_blockquote]:border-rule [&_blockquote]:pl-3 [&_h1]:mb-2 [&_h1]:font-display [&_h1]:text-[1.2rem] [&_h1]:font-bold [&_h1]:text-green [&_h2]:mb-2 [&_h2]:font-display [&_h2]:text-[1.1rem] [&_h2]:font-bold [&_h2]:text-green [&_h3]:mb-2 [&_h3]:font-display [&_h3]:text-[1rem] [&_h3]:font-bold [&_h3]:text-green [&_ol]:mb-3 [&_ol]:list-decimal [&_ol]:pl-5 [&_p]:mb-3 [&_p:last-child]:mb-0 [&_pre]:mb-3 [&_pre]:overflow-x-auto [&_pre]:rounded [&_pre]:bg-cream [&_pre]:p-2 [&_ul]:mb-3 [&_ul]:list-disc [&_ul]:pl-5"
             >
               <FormatTourCardDescription>{description}</FormatTourCardDescription>
             </div>
@@ -148,7 +152,7 @@ export function TourCard({
           <Link
             to="/tours/$slug"
             params={{ slug: tour.slug }}
-            className="inline-flex items-center justify-center gap-2 rounded-[30px] bg-orange px-5 py-2.75 text-[0.8rem] font-semibold whitespace-nowrap text-white transition-colors hover:bg-[#D9600F]"
+            className="inline-flex items-center justify-center gap-2 rounded-[30px] bg-orange px-5 py-2.75 text-[0.8rem] font-semibold whitespace-nowrap text-white transition-colors after:absolute after:inset-0 after:z-2 after:content-[''] hover:bg-[#D9600F]"
           >
             View Details →
           </Link>
