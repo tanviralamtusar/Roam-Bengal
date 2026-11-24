@@ -1,6 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { serverClient } from "@/integrations/mysql/client.server";
+import { sendInquiryNotification } from "@/lib/mailer.server";
 
 /**
  * The two public writes.
@@ -58,8 +59,41 @@ export const submitInquiry = createServerFn({ method: "POST" })
       console.error("[capture] submitInquiry:", error.message);
       throw new Error("We couldn't submit your inquiry. Please try again.");
     }
+
+    // Staff email. Fire-and-forget: the lead is already saved, so a slow or failing
+    // SMTP server must neither delay the visitor's confirmation nor fail it.
+    void notifyStaff(data).catch((err: unknown) => {
+      console.error("[capture] inquiry notification failed:", err instanceof Error ? err.message : err);
+    });
+
     return { ok: true };
   });
+
+async function notifyStaff(data: InquiryInput): Promise<void> {
+  const tourSlug = nullIfBlank(data.tour_slug);
+  let tourTitle: string | null = null;
+  if (tourSlug) {
+    const { data: tour } = await serverClient()
+      .from("tours")
+      .select("title")
+      .eq("slug", tourSlug)
+      .maybeSingle();
+    tourTitle = (tour as { title?: string } | null)?.title ?? null;
+  }
+  await sendInquiryNotification({
+    name: data.name.trim(),
+    email: data.email.trim(),
+    phone: nullIfBlank(data.phone),
+    country: nullIfBlank(data.country),
+    tourSlug,
+    tourTitle,
+    destination: nullIfBlank(data.destination),
+    startDate: nullIfBlank(data.start_date),
+    travelers: data.travelers ?? null,
+    budget: nullIfBlank(data.budget),
+    message: data.message.trim(),
+  });
+}
 
 const NewsletterSchema = z.object({
   email: z.string().trim().email().max(200),
