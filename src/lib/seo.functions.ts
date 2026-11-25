@@ -7,6 +7,9 @@ import {
   httpError,
 } from "@/integrations/mysql/auth-middleware";
 import { STATIC_LINK_TARGETS } from "@/lib/link-targets";
+import { toTourDTO } from "@/lib/tour-dto";
+import { toPostDTO } from "@/lib/post-dto";
+import { postSeoContent, tourSeoContent, type SeoContent } from "@/lib/seo-content";
 export type SeoMetaRow = Record<string, any>;
 export type RedirectRow = Record<string, any>;
 
@@ -117,6 +120,9 @@ export interface SeoTarget {
   title: string;
   path: string;
   seo: SeoMetaRow | null;
+  /** The page's visible copy for the content/readability checks. Null for static pages,
+   *  whose copy lives in code rather than the database. */
+  content: SeoContent | null;
 }
 
 /**
@@ -131,8 +137,9 @@ export const adminListAllSeoTargets = createServerFn({ method: "GET" })
     await assertAdmin(context);
 
     const [tours, posts, seoRows] = await Promise.all([
-      context.supabase.from("tours").select("id, slug, title").order("title"),
-      context.supabase.from("blog_posts").select("id, slug, title").order("title"),
+      // Full rows: the analyzer scores the page copy, not just the meta description.
+      context.supabase.from("tours").select("*").order("title"),
+      context.supabase.from("blog_posts").select("*").order("title"),
       context.supabase.from("seo_meta").select("*"),
     ]);
     orThrow("adminListAllSeoTargets(tours)", tours.error);
@@ -153,6 +160,7 @@ export const adminListAllSeoTargets = createServerFn({ method: "GET" })
         title: t.title,
         path: `/tours/${t.slug}`,
         seo: lookup("tour", t.id),
+        content: tourSeoContent(toTourDTO(t)),
       });
     }
     for (const p of posts.data ?? []) {
@@ -162,6 +170,7 @@ export const adminListAllSeoTargets = createServerFn({ method: "GET" })
         title: p.title,
         path: `/blog/${p.slug}`,
         seo: lookup("blog", p.id),
+        content: postSeoContent(toPostDTO(p)),
       });
     }
     for (const page of STATIC_LINK_TARGETS) {
@@ -172,6 +181,7 @@ export const adminListAllSeoTargets = createServerFn({ method: "GET" })
         title: page.label,
         path: page.path,
         seo: lookup("page", page.path),
+        content: null,
       });
     }
     return targets;

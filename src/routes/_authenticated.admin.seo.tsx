@@ -128,20 +128,42 @@ function SeoStat({ label, value, warn = false }: { label: string; value: number;
 // Pages
 // ---------------------------------------------------------------------------
 
+/** Every check for a target, run against its page copy (not its meta description). */
+function runChecks(target: SeoTarget, keyphrase: string, title: string, metaDescription: string) {
+  const content = target.content;
+  const keyphraseChecks = analyzeKeyphrase({
+    keyphrase,
+    title,
+    metaDescription,
+    slug: target.path,
+    body: content?.body,
+    h1: content?.h1,
+    firstParagraph: content?.firstParagraph,
+    imageAlts: content?.imageAlts,
+  });
+  const readabilityChecks: SeoCheck[] = content
+    ? analyzeReadability(content.prose)
+    : [
+        {
+          id: "read-static",
+          label: "Readability",
+          status: "info",
+          message: "This page's copy lives in the site code, so it isn't analyzed here.",
+        },
+      ];
+  return { keyphraseChecks, readabilityChecks };
+}
+
 function scoreFor(target: SeoTarget): { score: number; color: "good" | "ok" | "bad" | "info" } {
   const seo = target.seo;
   if (!seo?.focus_keyphrase) return { score: 0, color: "info" };
-  const checks = [
-    ...analyzeKeyphrase({
-      keyphrase: seo.focus_keyphrase,
-      title: seo.meta_title ?? target.title,
-      metaDescription: seo.meta_description ?? "",
-      slug: target.path,
-      body: "",
-    }),
-    ...analyzeReadability(seo.meta_description ?? ""),
-  ];
-  const { score, color } = overallScore(checks);
+  const { keyphraseChecks, readabilityChecks } = runChecks(
+    target,
+    seo.focus_keyphrase,
+    seo.meta_title ?? target.title,
+    seo.meta_description ?? "",
+  );
+  const { score, color } = overallScore([...keyphraseChecks, ...readabilityChecks]);
   return { score, color };
 }
 
@@ -237,19 +259,9 @@ function SeoEditModal({ target, onClose }: { target: SeoTarget; onClose: () => v
     disabled: !dirty,
   });
 
-  const keyphraseChecks = useMemo(
-    () => analyzeKeyphrase({
-        keyphrase: form.focus_keyphrase,
-        title: form.meta_title || target.title,
-        metaDescription: form.meta_description,
-        slug: target.path,
-        body: form.meta_description,
-      }),
-    [form.focus_keyphrase, form.meta_title, form.meta_description, target.title, target.path],
-  );
-  const readabilityChecks = useMemo(
-    () => analyzeReadability(form.meta_description),
-    [form.meta_description],
+  const { keyphraseChecks, readabilityChecks } = useMemo(
+    () => runChecks(target, form.focus_keyphrase, form.meta_title || target.title, form.meta_description),
+    [target, form.focus_keyphrase, form.meta_title, form.meta_description],
   );
   const checks = [...keyphraseChecks, ...readabilityChecks];
   const { score, label, color } = overallScore(checks);
@@ -507,7 +519,25 @@ function ChecksList({ title, checks }: { title: string; checks: SeoCheck[] }) {
         {checks.map((check) => (
           <li key={check.id} className="flex gap-3 px-4 py-3 text-[0.8rem]">
             <span className={`mt-1 h-2.5 w-2.5 shrink-0 rounded-full ${check.status === "good" ? "bg-green" : check.status === "bad" ? "bg-rust" : check.status === "ok" ? "bg-orange" : "bg-muted"}`} />
-            <div><p className="font-semibold text-ink">{check.label}</p><p className="mt-0.5 text-muted">{check.message}</p></div>
+            <div className="min-w-0">
+              <p className="font-semibold text-ink">{check.label}</p>
+              <p className="mt-0.5 text-muted">{check.message}</p>
+              {check.fix && (check.status === "ok" || check.status === "bad") ? (
+                <div className="mt-2 rounded-lg border border-orange/30 bg-orange/5 px-3 py-2">
+                  <p className="text-[0.76rem] text-ink">
+                    <span className="font-semibold">How to fix: </span>
+                    {check.fix}
+                  </p>
+                  {check.examples?.length ? (
+                    <ul className="mt-1.5 list-disc space-y-1 pl-4 text-[0.74rem] text-muted">
+                      {check.examples.map((example, index) => (
+                        <li key={index} className="break-words">{example}</li>
+                      ))}
+                    </ul>
+                  ) : null}
+                </div>
+              ) : null}
+            </div>
           </li>
         ))}
       </ul>
